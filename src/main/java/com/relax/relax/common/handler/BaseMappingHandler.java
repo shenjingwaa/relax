@@ -32,6 +32,8 @@ public class BaseMappingHandler {
     @PostConstruct
     public void init() throws NoSuchMethodException {
         RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
+
+        // TODO: 2023/12/15 0015 还需要增加注解自动生成的前置条件 
         String startClassPath;
         for (Class<?> baseClass : ClassUtil.scanPackage()) {
             if (baseClass.isAnnotationPresent(SpringBootApplication.class)){
