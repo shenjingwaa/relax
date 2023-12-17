@@ -26,10 +26,6 @@ public class BaseMappingHandler {
     @Autowired
     private ApplicationContext context;
 
-    @Autowired
-    private ApplicationArguments applicationArguments;
-
-
     @PostConstruct
     public void init() throws NoSuchMethodException {
         RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
