@@ -1,6 +1,8 @@
 package com.relax.relax.common.handler;
 
 import cn.hutool.core.util.ClassUtil;
+import com.relax.relax.common.annotation.EnableRelax;
+import com.relax.relax.common.annotation.RelaxClass;
 import com.relax.relax.common.controller.BaseController;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +12,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.lang.reflect.Method;
-import java.util.Set;
+import java.util.Objects;
 
 @Slf4j
 @Configuration
@@ -33,25 +34,33 @@ public class BaseMappingHandler {
     public void init() throws NoSuchMethodException {
         RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
 
-        // TODO: 2023/12/15 0015 还需要增加注解自动生成的前置条件 
-        String startClassPath;
         for (Class<?> baseClass : ClassUtil.scanPackage()) {
-            if (baseClass.isAnnotationPresent(SpringBootApplication.class)){
-                startClassPath = baseClass.getPackageName();
+            if (baseClass.isAnnotationPresent(SpringBootApplication.class)) {
+                EnableRelax enable = baseClass.getAnnotation(EnableRelax.class);
+                if (Objects.nonNull(enable)) {
+                    log.info("start to scan crud annotation.");
+
+                    for (Class<?> classItem : ClassUtil.scanPackage(baseClass.getPackageName())) {
+                        if (classItem.isAnnotationPresent(RelaxClass.class)) {
+                            log.info("need to auto crud class is {}", classItem.getName());
+                            String[] mappingMethods = classItem.getAnnotation(RelaxClass.class).methods();
+                            // TODO: 2023/12/17 0017 将动态拼接路径移动到该判断内部
+                        }
+                    }
+                }
                 break;
             }
         }
-
-
+        // TODO: 2023/12/17 0017 动态拼接路径
         RequestMappingInfo mapping = RequestMappingInfo
-                .paths("/test/info")
+                .paths("/user/add")
                 .options(initConfiguration(handlerMapping))
-                .methods(RequestMethod.GET)
+                .methods(RequestMethod.POST)
                 .build();
 
         BaseController<Object> controller = new BaseController<>();
-        Method info = BaseController.class.getMethod("info");
-        handlerMapping.registerMapping(mapping, controller, info);
+        Method add = BaseController.class.getMethod("add", Object.class);
+        handlerMapping.registerMapping(mapping, controller, add);
 
         log.info("init success.");
     }
