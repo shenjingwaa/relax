@@ -33,15 +33,14 @@ public class BaseMappingHandler {
     @PostConstruct
     public void init() {
         RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
-
         for (Class<?> baseClass : ClassUtil.scanPackage()) {
             if (baseClass.isAnnotationPresent(SpringBootApplication.class)) {
                 EnableRelax enable = baseClass.getAnnotation(EnableRelax.class);
                 if (Objects.nonNull(enable)) {
-                    log.info("start to scan crud annotation.");
+                    log.info("[relax] start to scan crud annotation.");
                     for (Class<?> classItem : ClassUtil.scanPackage(ClassUtil.getPackage(baseClass))) {
                         if (classItem.isAnnotationPresent(RelaxClass.class)) {
-                            log.info("need to auto crud class is {}", classItem.getName());
+                            log.info("[relax] need to auto crud class is {}", classItem.getName());
                             RelaxClass relaxClass = classItem.getAnnotation(RelaxClass.class);
                             for (Method method : BaseController.class.getMethods()) {
                                 List<String> targetMethod = Arrays.stream(relaxClass.methods()).collect(Collectors.toList());
@@ -55,15 +54,13 @@ public class BaseMappingHandler {
                                     handlerMapping.registerMapping(mapping, controller, method);
                                 }
                             }
-
                         }
                     }
-
                 }
+                log.info("[relax] init success.");
                 break;
             }
         }
-        log.info("init success.");
     }
 
     /**
