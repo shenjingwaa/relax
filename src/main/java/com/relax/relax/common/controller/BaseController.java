@@ -17,7 +17,6 @@ public class BaseController<T> {
     private final Class<T> baseEntityClass;
 
     @MappingType(RequestMethod.POST)
-
     @ResponseBody
     public RelaxResult add(@RequestBody T entity){
         try {
