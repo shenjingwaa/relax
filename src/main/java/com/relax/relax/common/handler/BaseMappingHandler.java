@@ -37,7 +37,7 @@ public class BaseMappingHandler {
             if (baseClass.isAnnotationPresent(SpringBootApplication.class)) {
                 // 检查springboot启动类中是否开启relax
                 EnableRelax enable = baseClass.getAnnotation(EnableRelax.class);
-                if (Objects.nonNull(enable)) {
+                if (Objects.nonNull(enable) && enable.isEnable()) {
                     log.info("[relax] start to scan crud annotation.");
                     for (Class<?> classItem : ClassUtil.scanPackage(ClassUtil.getPackage(baseClass))) {
                         //扫描加了自动增加增删改查接口的类
