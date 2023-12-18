@@ -15,8 +15,14 @@ public class RelaxResult {
 
     private int code;
 
+    private Object data;
+
     public static RelaxResult success(){
-        return new RelaxResult("操作成功",200);
+        return new RelaxResult("操作成功", 200, null);
+    }
+
+    public static RelaxResult success(Object data) {
+        return new RelaxResult("操作成功", 200, data);
     }
 
 }
