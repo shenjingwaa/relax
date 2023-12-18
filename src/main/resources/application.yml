@@ -1,0 +1,16 @@
+spring:
+  datasource:
+
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://123.249.87.67:3306/relax-db?serverTimezone=Shanghai&?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: haifeng328
+
+# MyBatis??
+mybatis-plus:
+  # ???????
+  typeAliasesPackage: com.relax.**.domain
+  # ??mapper?????????mapper.xml????
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # ?????????
+  configLocation: classpath:mybatis/mybatis-config.xml
