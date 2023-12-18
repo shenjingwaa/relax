@@ -18,28 +18,28 @@ public class BaseController<T> {
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult update(@RequestBody T entity){
-        log.info("execute add method ,requestBody is {}",entity);
+        log.info("execute update method ,requestBody is {}",entity);
         return RelaxResult.success();
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult delete(@RequestBody T entity){
-        log.info("execute add method ,requestBody is {}",entity);
+        log.info("execute delete method ,requestBody is {}",entity);
         return RelaxResult.success();
     }
 
     @MappingType(RequestMethod.GET)
     @ResponseBody
-    public RelaxResult info(@RequestBody T entity){
-        log.info("execute add method ,requestBody is {}",entity);
+    public RelaxResult info(@RequestParam T entity){
+        log.info("execute info method ,RequestParam is {}",entity);
         return RelaxResult.success();
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult page(@RequestBody T entity){
-        log.info("execute add method ,requestBody is {}",entity);
+        log.info("execute page method ,requestBody is {}",entity);
         return RelaxResult.success();
     }
 
