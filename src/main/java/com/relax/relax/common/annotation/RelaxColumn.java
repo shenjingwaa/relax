@@ -5,17 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RelaxEntity {
+public @interface RelaxColumn {
 
     /**
-     * 表名
+     * 列名
      */
-    String tableName();
+    String name() default "";
 
-    /**
-     * 开关
-     */
-    boolean enable() default true;
+    String type() default "";
 }
