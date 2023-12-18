@@ -110,6 +110,7 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
             boolean isPrimaryKey = field.isAnnotationPresent(RelaxId.class);
 
             if (isPrimaryKey) {
+                createTableSql.append(" AUTO_INCREMENT");
                 createTableSql.append(" PRIMARY KEY");
             }
             createTableSql.append(", ");
