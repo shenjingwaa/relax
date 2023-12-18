@@ -4,10 +4,7 @@ import cn.hutool.core.util.ClassUtil;
 import com.relax.relax.common.annotation.EnableRelax;
 import com.relax.relax.common.annotation.RelaxClass;
 import com.relax.relax.common.controller.BaseController;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -23,8 +21,11 @@ import java.util.Objects;
 @Configuration
 public class BaseMappingHandler {
 
-    @Autowired
-    private ApplicationContext context;
+    private final ApplicationContext context;
+
+    public BaseMappingHandler(ApplicationContext context) {
+        this.context = context;
+    }
 
     @PostConstruct
     public void init() throws NoSuchMethodException {
@@ -36,7 +37,7 @@ public class BaseMappingHandler {
                 if (Objects.nonNull(enable)) {
                     log.info("start to scan crud annotation.");
 
-                    for (Class<?> classItem : ClassUtil.scanPackage(baseClass.getPackageName())) {
+                    for (Class<?> classItem : ClassUtil.scanPackage(ClassUtil.getPackage(baseClass))) {
                         if (classItem.isAnnotationPresent(RelaxClass.class)) {
                             log.info("need to auto crud class is {}", classItem.getName());
                             String[] mappingMethods = classItem.getAnnotation(RelaxClass.class).methods();
