@@ -13,13 +13,18 @@ public @interface RelaxClass {
      * 动态增删改查接口的前缀
      * 前缀请不要携带 '/'
      */
-    String value();
+    String prefix();
 
     /**
      * 需要自动生成的方法
      * @return
      */
     String[] methods() default {"add","delete","update","info","page"};
+
+    /**
+     * controller对应的表实体类型
+     */
+    Class<?> entityType();
 
 
 

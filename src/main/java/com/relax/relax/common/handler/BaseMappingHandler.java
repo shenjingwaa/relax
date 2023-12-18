@@ -35,22 +35,29 @@ public class BaseMappingHandler {
         RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
         for (Class<?> baseClass : ClassUtil.scanPackage()) {
             if (baseClass.isAnnotationPresent(SpringBootApplication.class)) {
+                // 检查springboot启动类中是否开启relax
                 EnableRelax enable = baseClass.getAnnotation(EnableRelax.class);
                 if (Objects.nonNull(enable)) {
                     log.info("[relax] start to scan crud annotation.");
                     for (Class<?> classItem : ClassUtil.scanPackage(ClassUtil.getPackage(baseClass))) {
+                        //扫描加了自动增加增删改查接口的类
                         if (classItem.isAnnotationPresent(RelaxClass.class)) {
                             log.info("[relax] need to auto crud class is {}", classItem.getName());
                             RelaxClass relaxClass = classItem.getAnnotation(RelaxClass.class);
                             for (Method method : BaseController.class.getMethods()) {
+                                // 获取用户选择自动映射的接口
                                 List<String> targetMethod = Arrays.stream(relaxClass.methods()).collect(Collectors.toList());
+                                //检查具有@MappingType注解的方法并且过滤不需要的接口
                                 if (method.isAnnotationPresent(MappingType.class) && targetMethod.contains(method.getName())) {
+                                    //构建映射信息
                                     RequestMappingInfo mapping = RequestMappingInfo
-                                            .paths(String.format("/%s/%s", relaxClass.value(), method.getName()))
+                                            .paths(String.format("/%s/%s", relaxClass.prefix(), method.getName()))
                                             .options(initConfiguration(handlerMapping))
                                             .methods(method.getAnnotation(MappingType.class).value())
                                             .build();
-                                    BaseController<Object> controller = new BaseController<>();
+
+                                    BaseController controller = new BaseController(relaxClass.entityType());
+                                    //注册映射信息
                                     handlerMapping.registerMapping(mapping, controller, method);
                                 }
                             }
