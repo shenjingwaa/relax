@@ -45,7 +45,7 @@ public enum BaseSqlEnum {
                     .createStatement()
                     .execute(sql);
         } catch (SQLException e) {
-            log.error("[relax] execute add sql error.\n" +
+            log.error("[relax] execute update sql error.\n" +
                             "sql is : {},\n" +
                             "error message is :{}\n",
                     sql, e.getMessage());
@@ -53,6 +53,22 @@ public enum BaseSqlEnum {
         }
         return 1;
     }),
+    DELETE_BY_ID((entity)-> {
+        String sql = initSql(SqlTemplate.DELETE_BY_ID, entity);
+        try {
+            SpringUtil.getBean(DataSource.class)
+                    .getConnection()
+                    .createStatement()
+                    .execute(sql);
+        } catch (SQLException e) {
+            log.error("[relax] execute delete sql error.\n" +
+                            "sql is : {},\n" +
+                            "error message is :{}\n",
+                    sql, e.getMessage());
+            return 0;
+        }
+        return 1;
+    })
     ;
 
     BaseSqlEnum(Function<Object, Integer> fn) {
@@ -75,6 +91,9 @@ public enum BaseSqlEnum {
         }
         if (Objects.equals(SqlTemplate.UPDATE_BY_ID, sqlTemplate)) {
             return createUpdateSql(sqlTemplate, entity, entity.getClass().getAnnotation(RelaxEntity.class));
+        }
+        if (Objects.equals(SqlTemplate.DELETE_BY_ID, sqlTemplate)) {
+            return createDeleteSql(sqlTemplate, entity, entity.getClass().getAnnotation(RelaxEntity.class));
         }
         return createInsertSql(sqlTemplate, entity, entity.getClass().getAnnotation(RelaxEntity.class));
     }
@@ -127,6 +146,14 @@ public enum BaseSqlEnum {
         return String.format(sqlTemplate, relaxEntity.tableName(), set, values.get("id"));
     }
 
+    /**
+     * 创建根据id删除sql
+     */
+    private static String createDeleteSql(String sqlTemplate, Object entity, RelaxEntity relaxEntity) {
+        // todo 2023年12月18日 增加sql校验,防止sql注入攻击
+        JSONObject values = JSON.parseObject(JSON.toJSONString(entity));
+        return String.format(sqlTemplate, relaxEntity.tableName(), values.get("id"));
+    }
 
     /**
      * 检验是否符合注解标准

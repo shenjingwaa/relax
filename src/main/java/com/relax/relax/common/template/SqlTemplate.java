@@ -5,9 +5,17 @@ package com.relax.relax.common.template;
  */
 public class SqlTemplate {
 
-    public static final String UPDATE_BY_ID = "UPDATE `%s` SET %s  where `id` = %s";
     /**
      * 插入
      */
-    public static String INSERT = "insert into `%s`(%s) values(%s)";
+    public static final String INSERT = "insert into `%s`(%s) values(%s)";
+    /**
+     * 根据ID修改
+     */
+    public static final String UPDATE_BY_ID = "update `%s` SET %s  where `id` = '%s'";
+
+    /**
+     * 根据ID删除
+     */
+    public static final String DELETE_BY_ID = "delete from `%s` where `id` = '%s'";
 }

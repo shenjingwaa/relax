@@ -61,6 +61,7 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
+            BaseSqlEnum.DELETE_BY_ID.execute(instance);
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute delete method for {} fail," +
                             "requestBody is {}\n" +
