@@ -28,4 +28,9 @@ public class SqlTemplate {
      * 列表查询
      */
     public static final String SELECT_LIST = "select * from `%s` where 1=1 %s ";
+
+    /**
+     * 分页查询
+     */
+    public static final String SELECT_PAGE = "select * from `%s` where 1=1 %s limit %s";
 }

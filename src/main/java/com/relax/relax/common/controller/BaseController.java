@@ -97,7 +97,7 @@ public class BaseController<T> {
         } else {
             throw new IllegalArgumentException("args format error.");
         }
-        log.info("execute info method ,RequestParam is id = {}", instance);
+        log.error("execute info method ,RequestParam is id = {}", instance);
 
         return RelaxResult.success(BaseSqlEnum.SELECT_ONE.execute(instance));
     }
@@ -108,6 +108,7 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
+            return RelaxResult.success(BaseSqlEnum.SELECT_PAGE.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute page method for {} fail," +
                             "requestBody is {}\n" +
@@ -116,8 +117,8 @@ public class BaseController<T> {
                     entity,
                     e.getMessage());
         }
-        log.debug("execute page method ,requestBody is {}", entity);
-        return RelaxResult.success();
+        log.error("execute page method ,requestBody is {}", entity);
+        return RelaxResult.fail();
     }
 
     @MappingType(RequestMethod.POST)
@@ -135,7 +136,7 @@ public class BaseController<T> {
                     entity,
                     e.getMessage());
         }
-        log.debug("execute page method ,requestBody is {}", entity);
+        log.error("execute page method ,requestBody is {}", entity);
         return RelaxResult.fail();
     }
 

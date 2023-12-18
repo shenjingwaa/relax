@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -45,6 +46,8 @@ public enum BaseSqlEnum {
             .queryForMap(initSelectSql(SqlTemplate.SELECT_ONE, param))),
     SELECT_LIST((param) -> SpringUtil.getBean(JdbcTemplate.class)
             .queryForList(initSelectSql(SqlTemplate.SELECT_LIST, param))),
+    SELECT_PAGE((param) -> SpringUtil.getBean(JdbcTemplate.class)
+            .queryForList(initSelectSql(SqlTemplate.SELECT_PAGE, param))),
 
     ;
 
@@ -100,6 +103,20 @@ public enum BaseSqlEnum {
                 sb.append("=");
                 sb.append("'").append(entry.getValue()).append("'");
             }
+            return createSelectOneSql(sqlTemplate, sb.toString(), paramClass.getAnnotation(RelaxEntity.class));
+        } else if (Objects.equals(SqlTemplate.SELECT_PAGE, sqlTemplate)) {
+            JSONObject jsonMap = JSON.parseObject(JSON.toJSONString(param));
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+                sb.append(" and ");
+                sb.append("`").append(entry.getKey().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase()).append("`");
+                sb.append("=");
+                sb.append("'").append(entry.getValue()).append("'");
+            }
+            HttpServletRequest request = SpringUtil.getBean(HttpServletRequest.class);
+            long size = Long.parseLong(request.getParameter("pageSize"));
+            long num = Long.parseLong(request.getParameter("pageNum"));
+            sb.append(" limit ").append((num-1)*size).append(",").append(size);
             return createSelectOneSql(sqlTemplate, sb.toString(), paramClass.getAnnotation(RelaxEntity.class));
         } else {
             return "";
