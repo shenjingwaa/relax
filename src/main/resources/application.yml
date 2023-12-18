@@ -1,16 +1,18 @@
 spring:
   datasource:
-
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://123.249.87.67:3306/relax-db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
     username: root
     password: haifeng328
 
-# MyBatis??
+  # MyBatis配置
 mybatis-plus:
-  # ???????
+  # 搜索指定包别名
   typeAliasesPackage: com.relax.**.domain
-  # ??mapper?????????mapper.xml????
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
   mapperLocations: classpath*:mapper/**/*Mapper.xml
-  # ?????????
+  # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
+
+relax:
+  entity-locations: com.relax.**.domain
