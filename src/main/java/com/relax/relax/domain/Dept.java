@@ -3,6 +3,7 @@ package com.relax.relax.domain;
 import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxEntity;
 import com.relax.relax.common.annotation.RelaxId;
+import com.relax.relax.common.constants.SqlFieldType;
 import lombok.Data;
 
 @Data
@@ -10,7 +11,6 @@ import lombok.Data;
 public class Dept {
 
     @RelaxId
-    @RelaxColumn
     private Long id;
 
     @RelaxColumn

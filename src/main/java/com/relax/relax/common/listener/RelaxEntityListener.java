@@ -18,6 +18,9 @@ import java.lang.reflect.Field;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,13 +58,10 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
     }
 
     private void processEntityClass(Class<?> entityClass, Connection connection) throws SQLException {
-        // TODO: 2023/12/18 可以改为根据大写转下划线风格
-        String tableName = entityClass.getSimpleName().toLowerCase();
+        String tableName = entityClass.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
         RelaxEntity relaxEntityAnnotation = entityClass.getAnnotation(RelaxEntity.class);
 
         if (!relaxEntityAnnotation.enable()) return;
-
-
 
         if (!relaxEntityAnnotation.tableName().isEmpty()) {
             tableName = relaxEntityAnnotation.tableName();
@@ -79,16 +79,35 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
                 if (columnAnnotation != null && !columnAnnotation.name().isEmpty()) {
                     columnName = columnAnnotation.name();
                 }
+
+            }
+            columnName = "`"+columnName+"`";
+
+            if (!field.isAnnotationPresent(RelaxColumn.class) || field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
+                Class<?> type = field.getType();
+                if (type.equals(String.class)) {
+                    createTableSql.append(columnName).append(" VARCHAR(255)");
+                } else if (type.equals(Long.class)) {
+                    createTableSql.append(columnName).append(" BIGINT");
+                } else if (type.equals(Integer.class)) {
+                    createTableSql.append(columnName).append(" INT");
+                } else if (type.equals(Float.class) || type.equals(Double.class)) {
+                    createTableSql.append(columnName).append(" DECIMAL(10,2)");
+                } else if (type.equals(Date.class) || type.equals(LocalDateTime.class)) {
+                    createTableSql.append(columnName).append(" DATETIME");
+                } else if (type.equals(LocalDate.class)) {
+                    createTableSql.append(columnName).append(" DATE");
+                } else {
+                    log.warn(type + "not default column type, please specify column type in @RelaxColumn");
+                    continue;
+                }
+            } else {
+                RelaxColumn relaxColumn = field.getAnnotation(RelaxColumn.class);
+                createTableSql.append(columnName).append(relaxColumn.type());
+                if (!relaxColumn.length().isEmpty()) createTableSql.append("(").append(relaxColumn.length()).append(")");
             }
 
             boolean isPrimaryKey = field.isAnnotationPresent(RelaxId.class);
-            Class<?> type = field.getType();
-
-            if (type.equals(String.class)) {
-                createTableSql.append(columnName).append(" VARCHAR(255)");
-            }else if (type.equals(Long.class)) {
-                createTableSql.append(columnName).append(" BIGINT");
-            }
 
             if (isPrimaryKey) {
                 createTableSql.append(" PRIMARY KEY");
