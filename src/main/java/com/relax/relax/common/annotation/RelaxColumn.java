@@ -15,4 +15,6 @@ public @interface RelaxColumn {
     String name() default "";
 
     String type() default "";
+
+    String length() default "";
 }
