@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Slf4j
 @AllArgsConstructor
 public class BaseController<T> {
