@@ -4,9 +4,8 @@ import com.relax.relax.common.annotation.RelaxClass;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RelaxClass("user")
+@RelaxClass(value = "dept")
 @RestController
-@RequestMapping("/user")
-public class UserController {
-
+@RequestMapping("/dept")
+public class DeptController {
 }

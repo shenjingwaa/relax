@@ -11,11 +11,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RelaxClass {
 
-    @AliasFor("methods")
-    String[] value() default "all";
+    /**
+     * 动态增删改查接口的前缀
+     * 前缀请不要携带 '/'
+     */
+    String value();
 
-    @AliasFor("value")
-    String[] methods() default "all";
+    /**
+     * 需要自动生成的方法
+     * @return
+     */
+    String[] methods() default {"add","delete","update","info","page"};
+
 
 
 }

@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnableRelax {
-
     boolean isEnable() default true;
 
 }
