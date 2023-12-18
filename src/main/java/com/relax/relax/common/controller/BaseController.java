@@ -30,12 +30,8 @@ public class BaseController<T> {
             log.debug("execute add method success,requestBody is {}", entity);
             return RelaxResult.success(BaseSqlEnum.INSERT.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("execute add method for {} fail," +
-                            "requestBody is {}\n" +
-                            "and the fail reason is :{}",
-                    this.baseEntityClass.getName(),
-                    entity,
-                    e.getMessage());
+            log.error("execute add method for {} fail,requestBody is {}\nand the fail reason is :{}",
+                    this.baseEntityClass.getName(), entity, e.getMessage());
         }
         return RelaxResult.fail();
     }
@@ -49,12 +45,8 @@ public class BaseController<T> {
             log.debug("execute update method ,requestBody is {}", entity);
             return RelaxResult.success(BaseSqlEnum.UPDATE_BY_ID.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("execute update method for {} fail," +
-                            "requestBody is {}\n" +
-                            "and the fail reason is :{}",
-                    this.baseEntityClass.getName(),
-                    entity,
-                    e.getMessage());
+            log.error("execute update method for {} fail,requestBody is {}\nand the fail reason is :{}",
+                    this.baseEntityClass.getName(), entity, e.getMessage());
         }
         return RelaxResult.fail();
     }
@@ -68,12 +60,8 @@ public class BaseController<T> {
             log.debug("execute delete method ,requestBody is {}", entity);
             return RelaxResult.success(BaseSqlEnum.DELETE_BY_ID.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("execute delete method for {} fail," +
-                            "requestBody is {}\n" +
-                            "and the fail reason is :{}",
-                    this.baseEntityClass.getName(),
-                    entity,
-                    e.getMessage());
+            log.error("execute delete method for {} fail,requestBody is {}\nand the fail reason is :{}",
+                    this.baseEntityClass.getName(), entity, e.getMessage());
         }
         return RelaxResult.fail();
     }
@@ -99,7 +87,6 @@ public class BaseController<T> {
             throw new IllegalArgumentException("args format error.");
         }
         log.error("execute info method ,RequestParam is id = {}", instance);
-
         return RelaxResult.success(BaseSqlEnum.SELECT_ONE.execute(instance));
     }
 
@@ -111,14 +98,9 @@ public class BaseController<T> {
             BeanUtil.copyProperties(entity, instance);
             return RelaxResult.success(BaseSqlEnum.SELECT_PAGE.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("execute page method for {} fail," +
-                            "requestBody is {}\n" +
-                            "and the fail reason is :{}",
-                    this.baseEntityClass.getName(),
-                    entity,
-                    e.getMessage());
+            log.error("execute page method for {} fail,requestBody is {}\n and the fail reason is :{}",
+                    this.baseEntityClass.getName(), entity, e.getMessage());
         }
-        log.error("execute page method ,requestBody is {}", entity);
         return RelaxResult.fail();
     }
 
@@ -130,14 +112,9 @@ public class BaseController<T> {
             BeanUtil.copyProperties(entity, instance);
             return RelaxResult.success(BaseSqlEnum.SELECT_LIST.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("execute list method for {} fail," +
-                            "requestBody is {}\n" +
-                            "and the fail reason is :{}",
-                    this.baseEntityClass.getName(),
-                    entity,
-                    e.getMessage());
+            log.error("execute list method for {} fail,requestBody is {}\nand the fail reason is :{}",
+                    this.baseEntityClass.getName(), entity, e.getMessage());
         }
-        log.error("execute page method ,requestBody is {}", entity);
         return RelaxResult.fail();
     }
 
