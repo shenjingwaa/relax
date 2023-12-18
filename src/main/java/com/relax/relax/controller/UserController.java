@@ -1,11 +1,11 @@
 package com.relax.relax.controller;
 
 import com.relax.relax.common.annotation.RelaxClass;
-import com.relax.relax.common.controller.BaseController;
 import com.relax.relax.domain.User;
 import org.springframework.web.bind.annotation.RestController;
 
 @RelaxClass
 @RestController
-public class UserController extends BaseController<User> {
+public class UserController {
+
 }
