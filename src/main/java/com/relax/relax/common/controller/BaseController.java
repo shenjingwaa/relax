@@ -126,7 +126,7 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            BaseSqlEnum.SELECT_LIST.execute(instance);
+            return RelaxResult.success(BaseSqlEnum.SELECT_LIST.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute list method for {} fail," +
                             "requestBody is {}\n" +
@@ -136,7 +136,7 @@ public class BaseController<T> {
                     e.getMessage());
         }
         log.debug("execute page method ,requestBody is {}", entity);
-        return RelaxResult.success();
+        return RelaxResult.fail();
     }
 
 }

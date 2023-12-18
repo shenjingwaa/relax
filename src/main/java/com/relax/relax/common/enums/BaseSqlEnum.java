@@ -125,7 +125,7 @@ public enum BaseSqlEnum {
      */
     private static String createSelectOneSql(String sqlTemplate, String uniqueFieldName, RelaxEntity annotation) {
         String format = String.format(sqlTemplate, annotation.tableName(), uniqueFieldName);
-        System.out.println(format);
+        log.debug(format);
         return format;
     }
 
