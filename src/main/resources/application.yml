@@ -2,7 +2,7 @@ spring:
   datasource:
 
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://123.249.87.67:3306/relax-db?serverTimezone=Shanghai&?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://123.249.87.67:3306/relax-db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8
     username: root
     password: haifeng328
 
