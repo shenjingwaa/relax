@@ -3,7 +3,7 @@ package com.relax.relax.common.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
-import com.relax.relax.common.enums.SqlEnum;
+import com.relax.relax.common.enums.BaseSqlEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            SqlEnum.INSERT.execute(instance);
+            BaseSqlEnum.INSERT.execute(instance);
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute add method for {} fail," +
                             "requestBody is {}\n" +
