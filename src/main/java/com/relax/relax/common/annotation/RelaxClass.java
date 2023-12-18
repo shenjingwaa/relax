@@ -19,7 +19,7 @@ public @interface RelaxClass {
      * 需要自动生成的方法
      * @return
      */
-    String[] methods() default {"add","delete","update","info","page"};
+    String[] methods() default {"add","delete","update","info","page","list"};
 
     /**
      * controller对应的表实体类型

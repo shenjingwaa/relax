@@ -8,8 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 @Slf4j
 @AllArgsConstructor
@@ -19,10 +22,11 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult add(@RequestBody T entity){
+    public RelaxResult add(@RequestBody T entity) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
+            log.debug("execute add method success,requestBody is {}", entity);
             return RelaxResult.success(BaseSqlEnum.INSERT.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute add method for {} fail," +
@@ -32,16 +36,16 @@ public class BaseController<T> {
                     entity,
                     e.getMessage());
         }
-        log.debug("execute add method success,requestBody is {}", entity);
-        return RelaxResult.success();
+        return RelaxResult.fail();
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult update(@RequestBody T entity){
+    public RelaxResult update(@RequestBody T entity) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
+            log.debug("execute update method ,requestBody is {}", entity);
             return RelaxResult.success(BaseSqlEnum.UPDATE_BY_ID.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute update method for {} fail," +
@@ -51,17 +55,17 @@ public class BaseController<T> {
                     entity,
                     e.getMessage());
         }
-        log.debug("execute update method ,requestBody is {}",entity);
-        return RelaxResult.success();
+        return RelaxResult.fail();
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult delete(@RequestBody T entity){
+    public RelaxResult delete(@RequestBody T entity) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            BaseSqlEnum.DELETE_BY_ID.execute(instance);
+            log.debug("execute delete method ,requestBody is {}", entity);
+            return RelaxResult.success(BaseSqlEnum.DELETE_BY_ID.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute delete method for {} fail," +
                             "requestBody is {}\n" +
@@ -70,20 +74,37 @@ public class BaseController<T> {
                     entity,
                     e.getMessage());
         }
-        log.debug("execute delete method ,requestBody is {}",entity);
-        return RelaxResult.success();
+        return RelaxResult.fail();
     }
 
     @MappingType(RequestMethod.GET)
     @ResponseBody
-    public RelaxResult info(@RequestParam String id){
-        log.debug("execute info method ,RequestParam is id = {}",id);
-        return RelaxResult.success();
+    public RelaxResult info(HttpServletRequest request) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
+        T instance = baseEntityClass.newInstance();
+        String uniqueFieldName = BaseSqlEnum.getUniqueFieldName(instance);
+        String parameter = request.getParameter(uniqueFieldName);
+
+        Field field = baseEntityClass.getDeclaredField(uniqueFieldName);
+        field.setAccessible(true);
+        if (Objects.equals(field.getType(), String.class)) {
+            field.set(instance, parameter);
+        } else if (Objects.equals(field.getType(), Long.class)) {
+            field.set(instance, Long.parseLong(parameter));
+        } else if (Objects.equals(field.getType(), Integer.class)) {
+            field.set(instance, Integer.parseInt(parameter));
+        } else if (Objects.equals(field.getType(), Short.class)) {
+            field.set(instance, Short.parseShort(parameter));
+        } else {
+            throw new IllegalArgumentException("args format error.");
+        }
+        log.info("execute info method ,RequestParam is id = {}", instance);
+
+        return RelaxResult.success(BaseSqlEnum.SELECT_ONE.execute(instance));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult page(@RequestBody T entity){
+    public RelaxResult page(@RequestBody T entity) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
@@ -95,7 +116,26 @@ public class BaseController<T> {
                     entity,
                     e.getMessage());
         }
-        log.debug("execute page method ,requestBody is {}",entity);
+        log.debug("execute page method ,requestBody is {}", entity);
+        return RelaxResult.success();
+    }
+
+    @MappingType(RequestMethod.POST)
+    @ResponseBody
+    public RelaxResult list(@RequestBody T entity) {
+        try {
+            T instance = baseEntityClass.newInstance();
+            BeanUtil.copyProperties(entity, instance);
+            BaseSqlEnum.SELECT_LIST.execute(instance);
+        } catch (InstantiationException | IllegalAccessException e) {
+            log.error("execute list method for {} fail," +
+                            "requestBody is {}\n" +
+                            "and the fail reason is :{}",
+                    this.baseEntityClass.getName(),
+                    entity,
+                    e.getMessage());
+        }
+        log.debug("execute page method ,requestBody is {}", entity);
         return RelaxResult.success();
     }
 

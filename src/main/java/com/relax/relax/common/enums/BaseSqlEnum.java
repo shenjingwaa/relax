@@ -4,12 +4,21 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxEntity;
+import com.relax.relax.common.annotation.RelaxId;
 import com.relax.relax.common.template.SqlTemplate;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.BeanUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -21,69 +30,37 @@ import java.util.function.Function;
 @Slf4j
 public enum BaseSqlEnum {
     INSERT((entity) -> {
-        String sql = initSql(SqlTemplate.INSERT, entity);
-        log.debug("[relax] execute sql : {}", sql);
-        try {
-            SpringUtil.getBean(DataSource.class)
-                    .getConnection()
-                    .createStatement()
-                    .execute(sql);
-        } catch (SQLException e) {
-            log.error("[relax] execute add sql error.\n" +
-                            "sql is : {},\n" +
-                            "error message is :{}\n",
-                    sql, e.getMessage());
-            return 0;
-        }
+        SpringUtil.getBean(JdbcTemplate.class).execute(initSql(SqlTemplate.INSERT, entity));
         return 1;
     }),
     UPDATE_BY_ID((entity) -> {
-        String sql = initSql(SqlTemplate.UPDATE_BY_ID, entity);
-        try {
-            SpringUtil.getBean(DataSource.class)
-                    .getConnection()
-                    .createStatement()
-                    .execute(sql);
-        } catch (SQLException e) {
-            log.error("[relax] execute update sql error.\n" +
-                            "sql is : {},\n" +
-                            "error message is :{}\n",
-                    sql, e.getMessage());
-            return 0;
-        }
+        SpringUtil.getBean(JdbcTemplate.class).execute(initSql(SqlTemplate.UPDATE_BY_ID, entity));
         return 1;
     }),
-    DELETE_BY_ID((entity)-> {
-        String sql = initSql(SqlTemplate.DELETE_BY_ID, entity);
-        try {
-            SpringUtil.getBean(DataSource.class)
-                    .getConnection()
-                    .createStatement()
-                    .execute(sql);
-        } catch (SQLException e) {
-            log.error("[relax] execute delete sql error.\n" +
-                            "sql is : {},\n" +
-                            "error message is :{}\n",
-                    sql, e.getMessage());
-            return 0;
-        }
+    DELETE_BY_ID((entity) -> {
+        SpringUtil.getBean(JdbcTemplate.class).execute(initSql(SqlTemplate.DELETE_BY_ID, entity));
         return 1;
-    })
+    }),
+    SELECT_ONE((param) -> SpringUtil.getBean(JdbcTemplate.class)
+            .queryForMap(initSelectSql(SqlTemplate.SELECT_ONE, param))),
+    SELECT_LIST((param) -> SpringUtil.getBean(JdbcTemplate.class)
+            .queryForList(initSelectSql(SqlTemplate.SELECT_LIST, param))),
+
     ;
 
-    BaseSqlEnum(Function<Object, Integer> fn) {
+    BaseSqlEnum(Function<Object, Object> fn) {
         this.fn = fn;
     }
 
-    private final Function<Object, Integer> fn;
+    private final Function<Object, Object> fn;
 
-    public int execute(Object entity) {
+    public Object execute(Object entity) {
         if (isStandadRelaxEntity(entity.getClass()) == null) return 0;
         return fn.apply(entity);
     }
 
     /**
-     * 初始化sql
+     * 初始化变更sql
      */
     private static String initSql(String sqlTemplate, Object entity) {
         if (Objects.equals(SqlTemplate.INSERT, sqlTemplate)) {
@@ -95,7 +72,61 @@ public enum BaseSqlEnum {
         if (Objects.equals(SqlTemplate.DELETE_BY_ID, sqlTemplate)) {
             return createDeleteSql(sqlTemplate, entity, entity.getClass().getAnnotation(RelaxEntity.class));
         }
-        return createInsertSql(sqlTemplate, entity, entity.getClass().getAnnotation(RelaxEntity.class));
+        return "";
+    }
+
+    /**
+     * 初始化查询相关sql
+     */
+    private static String initSelectSql(String sqlTemplate, Object param) {
+        Class<?> paramClass = param.getClass();
+        if (Objects.equals(SqlTemplate.SELECT_ONE, sqlTemplate)) {
+            String uniqueFieldName = getUniqueFieldName(param);
+            Field field = null;
+            try {
+                field = paramClass.getDeclaredField(uniqueFieldName);
+                field.setAccessible(true);
+
+                return createSelectOneSql(sqlTemplate, field.get(param).toString(), paramClass.getAnnotation(RelaxEntity.class));
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (Objects.equals(SqlTemplate.SELECT_LIST, sqlTemplate)) {
+            JSONObject jsonMap = JSON.parseObject(JSON.toJSONString(param));
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+                sb.append(" and ");
+                sb.append("`").append(entry.getKey().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase()).append("`");
+                sb.append("=");
+                sb.append("'").append(entry.getValue()).append("'");
+            }
+            return createSelectOneSql(sqlTemplate, sb.toString(), paramClass.getAnnotation(RelaxEntity.class));
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * 获取传入对象的唯一标识字段名
+     */
+    public static String getUniqueFieldName(Object param) {
+        String uniqueFieldName = "id";
+        for (Field field : param.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(RelaxId.class)) {
+                uniqueFieldName = field.getName();
+                break;
+            }
+        }
+        return uniqueFieldName;
+    }
+
+    /**
+     * 查询详情信息sql
+     */
+    private static String createSelectOneSql(String sqlTemplate, String uniqueFieldName, RelaxEntity annotation) {
+        String format = String.format(sqlTemplate, annotation.tableName(), uniqueFieldName);
+        System.out.println(format);
+        return format;
     }
 
     /**
