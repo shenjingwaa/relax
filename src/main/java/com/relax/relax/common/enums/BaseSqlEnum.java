@@ -142,7 +142,7 @@ public enum BaseSqlEnum {
         }
         set.deleteCharAt(set.lastIndexOf(","));
         // todo 2023年12月18日 增加sql校验,防止sql注入攻击
-
+        // todo 2023年12月18日 将id更换为动态主键
         return String.format(sqlTemplate, relaxEntity.tableName(), set, values.get("id"));
     }
 
@@ -152,6 +152,7 @@ public enum BaseSqlEnum {
     private static String createDeleteSql(String sqlTemplate, Object entity, RelaxEntity relaxEntity) {
         // todo 2023年12月18日 增加sql校验,防止sql注入攻击
         JSONObject values = JSON.parseObject(JSON.toJSONString(entity));
+        // todo 2023年12月18日 将id更换为动态主键
         return String.format(sqlTemplate, relaxEntity.tableName(), values.get("id"));
     }
 
