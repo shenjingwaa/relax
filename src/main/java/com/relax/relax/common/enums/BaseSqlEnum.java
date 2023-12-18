@@ -53,11 +53,7 @@ public enum BaseSqlEnum {
         }
         return 1;
     }),
-
-
     ;
-
-
 
     BaseSqlEnum(Function<Object, Integer> fn) {
         this.fn = fn;
@@ -66,8 +62,7 @@ public enum BaseSqlEnum {
     private final Function<Object, Integer> fn;
 
     public int execute(Object entity) {
-        Class<?> eneityClass = entity.getClass();
-        if (isStandadRelaxEntity(eneityClass) == null) return 0;
+        if (isStandadRelaxEntity(entity.getClass()) == null) return 0;
         return fn.apply(entity);
     }
 
@@ -92,7 +87,7 @@ public enum BaseSqlEnum {
         StringBuilder val = new StringBuilder();
         for (Map.Entry<String, Object> entry : JSON.parseObject(JSON.toJSONString(entity)).entrySet()) {
             colum.append("`");
-            colum.append(entry.getKey());
+            colum.append(entry.getKey().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase());
             colum.append("`");
             colum.append(",");
 
@@ -118,7 +113,7 @@ public enum BaseSqlEnum {
         JSONObject values = JSON.parseObject(JSON.toJSONString(entity));
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             set.append("`");
-            set.append(entry.getKey());
+            set.append(entry.getKey().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase());
             set.append("`");
             set.append(" = ");
             set.append("'");

@@ -1,6 +1,8 @@
 package com.relax.relax.domain;
 
+import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxEntity;
+import com.relax.relax.common.annotation.RelaxId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,12 +15,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class User {
 
+    @RelaxId
+    @RelaxColumn
     private Long id;
 
-    private String username;
+    @RelaxColumn
+    private String userName;
 
+    @RelaxColumn
     private Integer age;
 
+    @RelaxColumn
     private LocalDateTime birthday;
 
 }
