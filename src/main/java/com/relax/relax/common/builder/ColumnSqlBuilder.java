@@ -3,7 +3,7 @@ package com.relax.relax.common.builder;
 import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxId;
 import com.relax.relax.common.enums.ColumnType;
-import com.relax.relax.common.utils.StringUtil;
+import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -44,7 +44,7 @@ public class ColumnSqlBuilder {
 
     private static String getColumnName(Field field) {
         RelaxColumn columnAnnotation = field.getAnnotation(RelaxColumn.class);
-        String defaultColumnName = StringUtil.camelCaseToUnderscore(field.getName());
+        String defaultColumnName = RegexUtil.camelCaseToUnderscore(field.getName());
         return (columnAnnotation != null && !columnAnnotation.name().isEmpty()) ?
                 "`" + columnAnnotation.name() + "`" :
                 "`" + defaultColumnName + "`";
