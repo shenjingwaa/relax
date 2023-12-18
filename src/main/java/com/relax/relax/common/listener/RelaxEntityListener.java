@@ -73,7 +73,7 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
 
         Field[] fields = entityClass.getDeclaredFields();
         for (Field field : fields) {
-            String columnName = field.getName().toLowerCase();
+            String columnName = field.getName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
             if (field.isAnnotationPresent(RelaxColumn.class)) {
                 RelaxColumn columnAnnotation = field.getAnnotation(RelaxColumn.class);
                 if (columnAnnotation != null && !columnAnnotation.name().isEmpty()) {
