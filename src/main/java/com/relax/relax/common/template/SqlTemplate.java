@@ -5,6 +5,7 @@ package com.relax.relax.common.template;
  */
 public class SqlTemplate {
 
+    public static final String UPDATE_BY_ID = "UPDATE `%s` SET %s  where `id` = %s";
     /**
      * 插入
      */

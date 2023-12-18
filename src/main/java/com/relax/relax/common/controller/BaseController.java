@@ -42,6 +42,7 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
+            return RelaxResult.success(BaseSqlEnum.UPDATE_BY_ID.execute(instance));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute update method for {} fail," +
                             "requestBody is {}\n" +
