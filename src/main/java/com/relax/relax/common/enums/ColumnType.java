@@ -9,6 +9,7 @@ public enum ColumnType {
     INTEGER(" INT"),
     DECIMAL(" DECIMAL(10,2)"),
     DATETIME(" DATETIME"),
+    LOCALDATETIME(" DATETIME"),
     DATE(" DATE");
 
     private final String sqlType;
