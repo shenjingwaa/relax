@@ -31,8 +31,8 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.GET)
     @ResponseBody
-    public RelaxResult info(@RequestParam T entity){
-        log.info("execute info method ,RequestParam is {}",entity);
+    public RelaxResult info(@RequestParam String id){
+        log.info("execute info method ,RequestParam is id = {}",id);
         return RelaxResult.success();
     }
 
