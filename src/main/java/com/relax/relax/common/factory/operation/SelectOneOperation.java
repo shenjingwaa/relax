@@ -16,10 +16,6 @@ public class SelectOneOperation extends SqlOperation{
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SelectOneOperation(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     @Override
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
         HashMap<String, Object> result = new HashMap<>();
@@ -41,4 +37,9 @@ public class SelectOneOperation extends SqlOperation{
     public boolean check(BaseSqlEnum sqlEnum) {
         return Objects.equals(sqlEnum,BaseSqlEnum.SELECT_ONE);
     }
+
+    public SelectOneOperation(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 }

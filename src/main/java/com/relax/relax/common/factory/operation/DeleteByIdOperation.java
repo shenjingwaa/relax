@@ -16,10 +16,6 @@ public class DeleteByIdOperation extends SqlOperation {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public DeleteByIdOperation(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     @Override
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
         Class<?> targetClass = param.getClass();
@@ -42,4 +38,9 @@ public class DeleteByIdOperation extends SqlOperation {
     public boolean check(BaseSqlEnum sqlEnum) {
         return Objects.equals(sqlEnum,BaseSqlEnum.DELETE_BY_ID);
     }
+
+    public DeleteByIdOperation(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 }
