@@ -33,7 +33,6 @@ public class BaseController<T> {
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.INSERT,request,instance)
             );
-//            return RelaxResult.success(BaseSqlEnum.INSERT.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute add method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -51,7 +50,6 @@ public class BaseController<T> {
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.UPDATE_BY_ID,request,instance)
             );
-//            return RelaxResult.success(BaseSqlEnum.UPDATE_BY_ID.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute update method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -66,7 +64,9 @@ public class BaseController<T> {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute delete method ,requestBody is {}", entity);
-            return RelaxResult.success(BaseSqlEnum.DELETE_BY_ID.execute(instance,request));
+            return RelaxResult.success(
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.DELETE_BY_ID,request,instance)
+            );
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute delete method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
