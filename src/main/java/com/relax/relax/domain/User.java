@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class User {
 
-    @RelaxId
+//    @RelaxId
     @RelaxColumn
     private Long id;
 

@@ -20,11 +20,9 @@ public class InsertOperation extends SqlOperation {
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
         Map<String, Object> result = new HashMap<>();
         Class<?> targetClass = param.getClass();
-
         String insertSql = "insert into %s(%s) values(%s)";
 
         List<String> itemList = prepareSqlProperties(targetClass, param, new ArrayList<>(), insertSql, getTableName(targetClass));
-
         if (Objects.isNull(itemList) || itemList.isEmpty()) {
             result.put("effectRow", 0);
             return result;
@@ -45,8 +43,6 @@ public class InsertOperation extends SqlOperation {
                                                 List<String> values,
                                                 String baseSqlTemplate,
                                                 String tableName) {
-        isRelaxEntityClass(targetClass);
-
         List<Field> fieldList = getRelaxField(targetClass);
         if (fieldList.isEmpty()) {
             log.error("[relax] The class attribute marked with @RelaxEntity must contain at least one field labeled with @RelaxColumn.");

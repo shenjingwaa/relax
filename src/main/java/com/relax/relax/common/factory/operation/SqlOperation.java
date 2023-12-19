@@ -40,20 +40,6 @@ public abstract class SqlOperation {
         return isClassHasRelaxId(targetClass);
     }
 
-    /**
-     * 检查一个类是否为注有@RelaxEntity的类
-     *
-     * @param targetClass 待检测类
-     */
-    protected RelaxEntity isRelaxEntityClass(Class<?> targetClass) {
-        RelaxEntity relaxEntity = targetClass.getAnnotation(RelaxEntity.class);
-        if (Objects.isNull(relaxEntity)) {
-            log.error("[relax] The class corresponding to the parameter must contain annotation @RelaxEntity.");
-            Thread.currentThread().interrupt();
-        }
-        return relaxEntity;
-    }
-
     protected String getTableName(Class<?> targetClass) {
         String tableName = isRelaxEntityClass(targetClass).tableName();
         if (Objects.isNull(tableName) || tableName.isEmpty()) {
@@ -71,6 +57,20 @@ public abstract class SqlOperation {
             log.error("[relax] The class attribute marked with @RelaxEntity must contain at least one field labeled with @RelaxColumn.");
         }
         return fieldList;
+    }
+
+    /**
+     * 检查一个类是否为注有@RelaxEntity的类
+     *
+     * @param targetClass 待检测类
+     */
+    private RelaxEntity isRelaxEntityClass(Class<?> targetClass) {
+        RelaxEntity relaxEntity = targetClass.getAnnotation(RelaxEntity.class);
+        if (Objects.isNull(relaxEntity)) {
+            log.error("[relax] The class corresponding to the parameter must contain annotation @RelaxEntity.");
+            Thread.currentThread().interrupt();
+        }
+        return relaxEntity;
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class SqlOperation {
             }
         }
         if (Objects.isNull(idFieldName)) {
-            log.error("[relax] An unexpected error occurred while obtaining the field name");
+            log.error("[relax] An unexpected error occurred while obtaining the field name,There must be a field with the @RelaxId annotation!");
             Thread.currentThread().interrupt();
         }
         return idFieldName;
