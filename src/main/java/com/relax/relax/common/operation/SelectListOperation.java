@@ -1,6 +1,6 @@
-package com.relax.relax.common.factory.operation;
+package com.relax.relax.common.operation;
 
-import com.relax.relax.common.factory.SqlType;
+import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;

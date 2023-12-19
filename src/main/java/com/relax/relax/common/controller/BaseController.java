@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
-import com.relax.relax.common.factory.SqlType;
+import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.factory.SqlOperationFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.relax.relax.common.factory;
+package com.relax.relax.common.enums;
 
 import com.relax.relax.common.annotation.RelaxId;
 import lombok.extern.slf4j.Slf4j;

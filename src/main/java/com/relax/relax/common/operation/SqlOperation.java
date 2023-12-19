@@ -1,9 +1,9 @@
-package com.relax.relax.common.factory.operation;
+package com.relax.relax.common.operation;
 
 import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxEntity;
 import com.relax.relax.common.annotation.RelaxId;
-import com.relax.relax.common.factory.SqlType;
+import com.relax.relax.common.enums.SqlType;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;

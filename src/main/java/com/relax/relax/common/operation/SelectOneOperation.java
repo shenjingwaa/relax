@@ -1,6 +1,6 @@
-package com.relax.relax.common.factory.operation;
+package com.relax.relax.common.operation;
 
-import com.relax.relax.common.factory.SqlType;
+import com.relax.relax.common.enums.SqlType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,34 +12,33 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class DeleteByIdOperation extends SqlOperation {
+public class SelectOneOperation extends SqlOperation{
 
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
-        Class<?> targetClass = param.getClass();
         HashMap<String, Object> result = new HashMap<>();
-        String deleteSql = "delete from relaxTableName where relaxRowIdName = ?";
-        deleteSql = deleteSql.replace("relaxTableName", getTableName(targetClass));
-        deleteSql = deleteSql.replace("relaxRowIdName", getUniqueColumn(targetClass));
+        Class<?> paramClass = param.getClass();
+        String selectOneSql = "select * from relaxTableName where relaxRowIdName = ? ";
+        selectOneSql = selectOneSql.replace("relaxTableName", getTableName(paramClass));
+        selectOneSql = selectOneSql.replace("relaxRowIdName", getUniqueColumn(paramClass));
 
         Object idValue = getUniqueColumnValue(param);
         if (Objects.isNull(idValue)) {
             log.error("[relax] Obtaining unique value is null.");
-            result.put("effectRow", 0);
             return result;
         }
-        result.put("effectRow", jdbcTemplate.update(deleteSql, idValue));
+        result.put("info", jdbcTemplate.queryForMap(selectOneSql, idValue));
         return result;
     }
 
     @Override
     public boolean check(SqlType sqlEnum) {
-        return Objects.equals(sqlEnum, SqlType.DELETE_BY_ID);
+        return Objects.equals(sqlEnum, SqlType.SELECT_ONE);
     }
 
-    public DeleteByIdOperation(JdbcTemplate jdbcTemplate) {
+    public SelectOneOperation(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

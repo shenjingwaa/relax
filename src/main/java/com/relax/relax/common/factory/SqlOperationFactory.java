@@ -1,6 +1,7 @@
 package com.relax.relax.common.factory;
 
-import com.relax.relax.common.factory.operation.SqlOperation;
+import com.relax.relax.common.enums.SqlType;
+import com.relax.relax.common.operation.SqlOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
