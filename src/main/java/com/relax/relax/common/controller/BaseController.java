@@ -1,9 +1,11 @@
 package com.relax.relax.common.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
-import com.relax.relax.common.enums.BaseSqlEnum;
+import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlOperationFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +25,15 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult add(@RequestBody T entity) {
+    public RelaxResult add(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute add method success,requestBody is {}", entity);
-            return RelaxResult.success(BaseSqlEnum.INSERT.execute(instance));
+            return RelaxResult.success(
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.INSERT,request,instance)
+            );
+//            return RelaxResult.success(BaseSqlEnum.INSERT.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute add method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -38,12 +43,12 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult update(@RequestBody T entity) {
+    public RelaxResult update(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute update method ,requestBody is {}", entity);
-            return RelaxResult.success(BaseSqlEnum.UPDATE_BY_ID.execute(instance));
+            return RelaxResult.success(BaseSqlEnum.UPDATE_BY_ID.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute update method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -53,12 +58,12 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult delete(@RequestBody T entity) {
+    public RelaxResult delete(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute delete method ,requestBody is {}", entity);
-            return RelaxResult.success(BaseSqlEnum.DELETE_BY_ID.execute(instance));
+            return RelaxResult.success(BaseSqlEnum.DELETE_BY_ID.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute delete method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -86,17 +91,17 @@ public class BaseController<T> {
         } else {
             throw new IllegalArgumentException("args format error.");
         }
-        log.error("execute info method ,RequestParam is id = {}", instance);
-        return RelaxResult.success(BaseSqlEnum.SELECT_ONE.execute(instance));
+        log.debug("execute info method ,RequestParam is id = {}", instance);
+        return RelaxResult.success(BaseSqlEnum.SELECT_ONE.execute(instance,request));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult page(@RequestBody T entity) {
+    public RelaxResult page(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            return RelaxResult.success(BaseSqlEnum.SELECT_PAGE.execute(instance));
+            return RelaxResult.success(BaseSqlEnum.SELECT_PAGE.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute page method for {} fail,requestBody is {}\n and the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -106,11 +111,11 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult list(@RequestBody T entity) {
+    public RelaxResult list(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            return RelaxResult.success(BaseSqlEnum.SELECT_LIST.execute(instance));
+            return RelaxResult.success(BaseSqlEnum.SELECT_LIST.execute(instance,request));
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute list method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());

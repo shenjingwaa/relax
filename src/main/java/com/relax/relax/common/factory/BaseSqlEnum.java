@@ -1,28 +1,20 @@
-package com.relax.relax.common.enums;
+package com.relax.relax.common.factory;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxEntity;
 import com.relax.relax.common.annotation.RelaxId;
 import com.relax.relax.common.template.SqlTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
  * 基础sql枚举
@@ -30,36 +22,36 @@ import java.util.function.Function;
  */
 @Slf4j
 public enum BaseSqlEnum {
-    INSERT((entity) -> {
+    INSERT((entity, request) -> {
         SpringUtil.getBean(JdbcTemplate.class).execute(initSql(SqlTemplate.INSERT, entity));
         return 1;
     }),
-    UPDATE_BY_ID((entity) -> {
+    UPDATE_BY_ID((entity, request) -> {
         SpringUtil.getBean(JdbcTemplate.class).execute(initSql(SqlTemplate.UPDATE_BY_ID, entity));
         return 1;
     }),
-    DELETE_BY_ID((entity) -> {
+    DELETE_BY_ID((entity, request) -> {
         SpringUtil.getBean(JdbcTemplate.class).execute(initSql(SqlTemplate.DELETE_BY_ID, entity));
         return 1;
     }),
-    SELECT_ONE((param) -> SpringUtil.getBean(JdbcTemplate.class)
-            .queryForMap(initSelectSql(SqlTemplate.SELECT_ONE, param))),
-    SELECT_LIST((param) -> SpringUtil.getBean(JdbcTemplate.class)
-            .queryForList(initSelectSql(SqlTemplate.SELECT_LIST, param))),
-    SELECT_PAGE((param) -> SpringUtil.getBean(JdbcTemplate.class)
-            .queryForList(initSelectSql(SqlTemplate.SELECT_PAGE, param))),
+    SELECT_ONE((param, request) -> SpringUtil.getBean(JdbcTemplate.class)
+            .queryForMap(initSelectSql(SqlTemplate.SELECT_ONE, param, request))),
+    SELECT_LIST((param, request) -> SpringUtil.getBean(JdbcTemplate.class)
+            .queryForList(initSelectSql(SqlTemplate.SELECT_LIST, param, request))),
+    SELECT_PAGE((param, request) -> SpringUtil.getBean(JdbcTemplate.class)
+            .queryForList(initSelectSql(SqlTemplate.SELECT_PAGE, param, request))),
 
     ;
 
-    BaseSqlEnum(Function<Object, Object> fn) {
+    BaseSqlEnum(BiFunction<Object, HttpServletRequest, Object> fn) {
         this.fn = fn;
     }
 
-    private final Function<Object, Object> fn;
+    private final BiFunction<Object, HttpServletRequest, Object> fn;
 
-    public Object execute(Object entity) {
+    public Object execute(Object entity, HttpServletRequest request) {
         if (isStandadRelaxEntity(entity.getClass()) == null) return 0;
-        return fn.apply(entity);
+        return fn.apply(entity, request);
     }
 
     /**
@@ -81,7 +73,7 @@ public enum BaseSqlEnum {
     /**
      * 初始化查询相关sql
      */
-    private static String initSelectSql(String sqlTemplate, Object param) {
+    private static String initSelectSql(String sqlTemplate, Object param, HttpServletRequest request) {
         Class<?> paramClass = param.getClass();
         if (Objects.equals(SqlTemplate.SELECT_ONE, sqlTemplate)) {
             String uniqueFieldName = getUniqueFieldName(param);
@@ -113,7 +105,6 @@ public enum BaseSqlEnum {
                 sb.append("=");
                 sb.append("'").append(entry.getValue()).append("'");
             }
-            HttpServletRequest request = SpringUtil.getBean(HttpServletRequest.class);
             long size = Long.parseLong(request.getParameter("pageSize"));
             long num = Long.parseLong(request.getParameter("pageNum"));
             sb.append(" limit ").append((num-1)*size).append(",").append(size);

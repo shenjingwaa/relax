@@ -1,0 +1,92 @@
+package com.relax.relax.common.factory.operation;
+
+import com.relax.relax.common.annotation.RelaxColumn;
+import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.utils.RegexUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Component
+public class InsertOperation extends SqlOperation {
+
+    @Resource
+    JdbcTemplate jdbcTemplate;
+
+
+    @Override
+    public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
+        Map<String, Object> result = new HashMap<>();
+        Class<?> targetClass = param.getClass();
+
+        String insertSql = "insert into %s(%s) values(%s)";
+
+        List<String> itemList = prepareSqlProperties(targetClass, param, new ArrayList<>(), insertSql, getTableName(targetClass));
+
+        if (Objects.isNull(itemList) || itemList.isEmpty()) {
+            result.put("effectRow", 0);
+            return result;
+        }
+        insertSql = itemList.remove(itemList.size() - 1);
+        int effectRow = jdbcTemplate.update(insertSql, itemList.toArray());
+        result.put("effectRow", effectRow);
+        return result;
+    }
+
+    @Override
+    public boolean check(BaseSqlEnum sqlEnum) {
+        return Objects.equals(sqlEnum, BaseSqlEnum.INSERT);
+    }
+
+    protected List<String> prepareSqlProperties(Class<?> targetClass,
+                                                Object param,
+                                                List<String> values,
+                                                String baseSqlTemplate,
+                                                String tableName) {
+        isRelaxEntityClass(targetClass);
+
+        List<Field> fieldList = getRelaxField(targetClass);
+        if (fieldList.isEmpty()) {
+            log.error("[relax] The class attribute marked with @RelaxEntity must contain at least one field labeled with @RelaxColumn.");
+            return null;
+        }
+
+        StringBuilder attrSb = new StringBuilder();
+        for (Field field : fieldList) {
+            try {
+                field.setAccessible(true);
+                Object value = field.get(param);
+                if (Objects.isNull(value)) {
+                    continue;
+                }
+                // 拼接sql
+                attrSb.append(RegexUtil.camelCaseToUnderscore(field.getName())).append(",");
+
+                //存入sql中用到的参数
+                values.add(value.toString());
+            } catch (IllegalAccessException e) {
+                log.error("[relax] Exception in obtaining value from param.");
+                return null;
+            }
+        }
+        attrSb.deleteCharAt(attrSb.lastIndexOf(","));
+
+        //sql中的占位符个数匹配
+        StringBuilder valueSb = new StringBuilder();
+        for (int i = 0; i < values.size(); i++) {
+            valueSb.append("?").append(",");
+        }
+        valueSb.deleteCharAt(valueSb.lastIndexOf(","));
+
+        baseSqlTemplate = String.format(baseSqlTemplate, tableName, attrSb, valueSb);
+        values.add(baseSqlTemplate);
+        return values;
+    }
+}
