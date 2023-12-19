@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
-import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlType;
 import com.relax.relax.common.factory.SqlOperationFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class BaseController<T> {
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute add method success,requestBody is {}", entity);
             return RelaxResult.success(
-                    SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.INSERT,request,instance)
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(SqlType.INSERT,request,instance)
             );
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute add method for {} fail,requestBody is {}\nand the fail reason is :{}",
@@ -48,7 +48,7 @@ public class BaseController<T> {
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute update method ,requestBody is {}", entity);
             return RelaxResult.success(
-                    SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.UPDATE_BY_ID,request,instance)
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(SqlType.UPDATE_BY_ID,request,instance)
             );
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute update method for {} fail,requestBody is {}\nand the fail reason is :{}",
@@ -65,7 +65,7 @@ public class BaseController<T> {
             BeanUtil.copyProperties(entity, instance);
             log.debug("execute delete method ,requestBody is {}", entity);
             return RelaxResult.success(
-                    SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.DELETE_BY_ID,request,instance)
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(SqlType.DELETE_BY_ID,request,instance)
             );
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute delete method for {} fail,requestBody is {}\nand the fail reason is :{}",
@@ -78,7 +78,7 @@ public class BaseController<T> {
     @ResponseBody
     public RelaxResult info(HttpServletRequest request) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
         T instance = baseEntityClass.newInstance();
-        String uniqueFieldName = BaseSqlEnum.getUniqueFieldName(instance);
+        String uniqueFieldName = SqlType.getUniqueFieldName(instance);
         String parameter = request.getParameter(uniqueFieldName);
 
         Field field = baseEntityClass.getDeclaredField(uniqueFieldName);
@@ -96,7 +96,7 @@ public class BaseController<T> {
         }
         log.debug("execute info method ,RequestParam is id = {}", instance);
         return RelaxResult.success(
-                SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.SELECT_ONE,request,instance)
+                SpringUtil.getBean(SqlOperationFactory.class).submit(SqlType.SELECT_ONE,request,instance)
         );
     }
 
@@ -106,7 +106,7 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            return RelaxResult.success(BaseSqlEnum.SELECT_PAGE.execute(instance,request));
+            return RelaxResult.success();
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute page method for {} fail,requestBody is {}\n and the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
@@ -120,7 +120,9 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            return RelaxResult.success(BaseSqlEnum.SELECT_LIST.execute(instance,request));
+            return RelaxResult.success(
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(SqlType.SELECT_LIST,request,instance)
+            );
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute list method for {} fail,requestBody is {}\nand the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());

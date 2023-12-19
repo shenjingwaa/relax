@@ -1,6 +1,6 @@
 package com.relax.relax.common.factory.operation;
 
-import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -34,8 +34,8 @@ public class SelectOneOperation extends SqlOperation{
     }
 
     @Override
-    public boolean check(BaseSqlEnum sqlEnum) {
-        return Objects.equals(sqlEnum,BaseSqlEnum.SELECT_ONE);
+    public boolean check(SqlType sqlEnum) {
+        return Objects.equals(sqlEnum, SqlType.SELECT_ONE);
     }
 
     public SelectOneOperation(JdbcTemplate jdbcTemplate) {

@@ -1,6 +1,6 @@
 package com.relax.relax.common.factory.operation;
 
-import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlType;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ public class SelectPageOperation extends SqlOperation{
     }
 
     @Override
-    public boolean check(BaseSqlEnum sqlEnum) {
-        return Objects.equals(sqlEnum,BaseSqlEnum.SELECT_PAGE);
+    public boolean check(SqlType sqlEnum) {
+        return Objects.equals(sqlEnum, SqlType.SELECT_PAGE);
     }
 }

@@ -1,6 +1,6 @@
 package com.relax.relax.common.factory.operation;
 
-import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlType;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,8 +34,8 @@ public class InsertOperation extends SqlOperation {
     }
 
     @Override
-    public boolean check(BaseSqlEnum sqlEnum) {
-        return Objects.equals(sqlEnum, BaseSqlEnum.INSERT);
+    public boolean check(SqlType sqlEnum) {
+        return Objects.equals(sqlEnum, SqlType.INSERT);
     }
 
     protected List<String> prepareSqlProperties(Class<?> targetClass,

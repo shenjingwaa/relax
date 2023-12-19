@@ -3,7 +3,7 @@ package com.relax.relax.common.factory.operation;
 import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.annotation.RelaxEntity;
 import com.relax.relax.common.annotation.RelaxId;
-import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlType;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +22,9 @@ public abstract class SqlOperation {
      */
     protected abstract Map<String, Object> executeSql(HttpServletRequest request, Object param);
 
-    protected abstract boolean check(BaseSqlEnum sqlEnum);
+    protected abstract boolean check(SqlType sqlEnum);
 
-    public Object execute(BaseSqlEnum sqlEnum, HttpServletRequest request, Object param) {
+    public Object execute(SqlType sqlEnum, HttpServletRequest request, Object param) {
         if (check(sqlEnum)) return executeSql(request, param);
         return null;
     }
@@ -35,7 +35,7 @@ public abstract class SqlOperation {
      * @param targetClass 待检测类
      * @return 字段名
      */
-    protected String getUniqueColumn(Class<?> targetClass) {
+    public String getUniqueColumn(Class<?> targetClass) {
         isRelaxEntityClass(targetClass);
         return isClassHasRelaxId(targetClass);
     }

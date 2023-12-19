@@ -1,6 +1,6 @@
 package com.relax.relax.common.factory.operation;
 
-import com.relax.relax.common.factory.BaseSqlEnum;
+import com.relax.relax.common.factory.SqlType;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +31,7 @@ public class SelectListOperation extends SqlOperation{
             return result;
         }
         selectListSql = args.remove(args.size() - 1);
-        result.put("list",jdbcTemplate.queryForList(selectListSql,args));
+        result.put("list",jdbcTemplate.queryForList(selectListSql,args.toArray()));
         return result;
     }
 
@@ -56,7 +56,7 @@ public class SelectListOperation extends SqlOperation{
             relaxSelectSql.append(relaxSelectItem.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName().toString())));
             args.add(fieldValue.toString());
         }
-        if (!args.isEmpty()) {
+        if (args.isEmpty()) {
             return null;
         }
         args.add(selectListSql.replace("relaxSelectSql",relaxSelectSql.toString()));;
@@ -64,8 +64,8 @@ public class SelectListOperation extends SqlOperation{
     }
 
     @Override
-    public boolean check(BaseSqlEnum sqlEnum) {
-        return Objects.equals(sqlEnum,BaseSqlEnum.SELECT_LIST);
+    public boolean check(SqlType sqlEnum) {
+        return Objects.equals(sqlEnum, SqlType.SELECT_LIST);
     }
 
     public SelectListOperation(JdbcTemplate jdbcTemplate) {

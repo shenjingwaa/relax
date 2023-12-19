@@ -23,7 +23,7 @@ public class SqlOperationFactory {
     /**
      * 获取待执行的sql
      */
-    public Object submit(BaseSqlEnum sqlEnum,
+    public Object submit(SqlType sqlEnum,
                          HttpServletRequest request,
                          Object param) {
         for (SqlOperation operation : sqlOperationList) {
