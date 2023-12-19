@@ -1,6 +1,6 @@
 package com.relax.relax.common.factory;
 
-import com.relax.relax.common.factory.operation.*;
+import com.relax.relax.common.factory.operation.SqlOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,8 +24,8 @@ public class SqlOperationFactory {
      * 获取待执行的sql
      */
     public Object submit(BaseSqlEnum sqlEnum,
-                                                  HttpServletRequest request,
-                                                  Object param) {
+                         HttpServletRequest request,
+                         Object param) {
         for (SqlOperation operation : sqlOperationList) {
             Object result = operation.execute(sqlEnum, request, param);
             if (Objects.nonNull(result)){
