@@ -1,25 +1,20 @@
 package com.relax.relax.common.factory.operation;
 
-import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.factory.BaseSqlEnum;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class InsertOperation extends SqlOperation {
 
-    @Resource
-    JdbcTemplate jdbcTemplate;
-
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
@@ -88,5 +83,9 @@ public class InsertOperation extends SqlOperation {
         baseSqlTemplate = String.format(baseSqlTemplate, tableName, attrSb, valueSb);
         values.add(baseSqlTemplate);
         return values;
+    }
+
+    public InsertOperation(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 }
