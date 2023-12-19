@@ -41,7 +41,7 @@ public abstract class SqlOperation {
     }
     protected Object getUniqueColumnValue(Object param) {
         String column = getUniqueColumn(param.getClass());
-        Field field = null;
+        Field field;
         try {
             field = param.getClass().getDeclaredField(column);
             field.setAccessible(true);

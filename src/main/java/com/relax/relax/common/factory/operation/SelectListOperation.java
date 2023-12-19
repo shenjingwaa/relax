@@ -53,13 +53,13 @@ public class SelectListOperation extends SqlOperation{
             if (Objects.isNull(fieldValue)) {
                 continue;
             }
-            relaxSelectSql.append(relaxSelectItem.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName().toString())));
+            relaxSelectSql.append(relaxSelectItem.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
             args.add(fieldValue.toString());
         }
         if (args.isEmpty()) {
             return null;
         }
-        args.add(selectListSql.replace("relaxSelectSql",relaxSelectSql.toString()));;
+        args.add(selectListSql.replace("relaxSelectSql",relaxSelectSql.toString()));
         return args;
     }
 
