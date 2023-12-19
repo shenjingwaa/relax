@@ -57,7 +57,8 @@ public class SelectListOperation extends SqlOperation{
             args.add(fieldValue.toString());
         }
         if (args.isEmpty()) {
-            return null;
+            args.add(selectListSql.replace("relaxSelectSql",""));
+            return args;
         }
         args.add(selectListSql.replace("relaxSelectSql",relaxSelectSql.toString()));
         return args;

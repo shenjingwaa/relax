@@ -106,7 +106,9 @@ public class BaseController<T> {
         try {
             T instance = baseEntityClass.newInstance();
             BeanUtil.copyProperties(entity, instance);
-            return RelaxResult.success();
+            return RelaxResult.success(
+                    SpringUtil.getBean(SqlOperationFactory.class).submit(SqlType.SELECT_PAGE,request,instance)
+            );
         } catch (InstantiationException | IllegalAccessException e) {
             log.error("execute page method for {} fail,requestBody is {}\n and the fail reason is :{}",
                     this.baseEntityClass.getName(), entity, e.getMessage());
