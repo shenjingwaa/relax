@@ -95,7 +95,9 @@ public class BaseController<T> {
             throw new IllegalArgumentException("args format error.");
         }
         log.debug("execute info method ,RequestParam is id = {}", instance);
-        return RelaxResult.success(BaseSqlEnum.SELECT_ONE.execute(instance,request));
+        return RelaxResult.success(
+                SpringUtil.getBean(SqlOperationFactory.class).submit(BaseSqlEnum.SELECT_ONE,request,instance)
+        );
     }
 
     @MappingType(RequestMethod.POST)

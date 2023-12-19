@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,25 +24,17 @@ public class DeleteByIdOperation extends SqlOperation {
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
         Class<?> targetClass = param.getClass();
         HashMap<String, Object> result = new HashMap<>();
-        String deleteSql = "delete from tableName where relaxRowIdName = ?";
-        deleteSql = deleteSql.replace("tableName", getTableName(targetClass));
-        String relaxRowIdName = getUniqueColumn(targetClass);
-        deleteSql = deleteSql.replace("relaxRowIdName", relaxRowIdName);
+        String deleteSql = "delete from relaxTableName where relaxRowIdName = ?";
+        deleteSql = deleteSql.replace("relaxTableName", getTableName(targetClass));
+        deleteSql = deleteSql.replace("relaxRowIdName", getUniqueColumn(targetClass));
 
-        Field field = null;
-        try {
-            field = targetClass.getDeclaredField(relaxRowIdName);
-            field.setAccessible(true);
-            Object idValue = field.get(param);
-            if (Objects.isNull(idValue)) {
-                log.error("[relax] Obtaining unique value is null.");
-                result.put("effectRow",0);
-                return result;
-            }
-            result.put("effectRow",jdbcTemplate.update(deleteSql,idValue));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            log.error("[relax] Exception in obtaining unique value.");
+        Object idValue = getUniqueColumnValue(param);
+        if (Objects.isNull(idValue)) {
+            log.error("[relax] Obtaining unique value is null.");
+            result.put("effectRow", 0);
+            return result;
         }
+        result.put("effectRow", jdbcTemplate.update(deleteSql, idValue));
         return result;
     }
 

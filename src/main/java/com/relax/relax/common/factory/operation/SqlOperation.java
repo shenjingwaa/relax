@@ -39,6 +39,19 @@ public abstract class SqlOperation {
         isRelaxEntityClass(targetClass);
         return isClassHasRelaxId(targetClass);
     }
+    protected Object getUniqueColumnValue(Object param) {
+        String column = getUniqueColumn(param.getClass());
+        Field field = null;
+        try {
+            field = param.getClass().getDeclaredField(column);
+            field.setAccessible(true);
+            return field.get(param);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            log.error("[relax] Exception in obtaining unique value.");
+        }
+        return null;
+    }
+
 
     protected String getTableName(Class<?> targetClass) {
         String tableName = isRelaxEntityClass(targetClass).tableName();
