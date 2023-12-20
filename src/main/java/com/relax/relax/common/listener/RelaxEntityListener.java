@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
 @Slf4j
 public class RelaxEntityListener implements ApplicationListener<ApplicationReadyEvent> {
 
