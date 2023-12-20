@@ -12,6 +12,7 @@
         A Rapid Development Tool Based on Springboot.
         Single table addition, deletion, modification, and querying can be quickly achieved through annotations, as well as entity reverse parsing into tables.
     </description>
+    <url>https://github.com/shenjingwaa/relax</url>
 
     <developers>
         <developer>
@@ -223,8 +224,8 @@
 
     <scm>
         <url>https://github.com/shenjingwaa/relax</url>
-        <connection>https://github.com/shenjingwaa/relax.git</connection>
-        <developerConnection>https://github.com/shenjingwaa/relax.git</developerConnection>
+        <connection>scm:git@github.com/shenjingwaa/relax.git</connection>
+        <developerConnection>scm:git@github.com/shenjingwaa/relax.git</developerConnection>
     </scm>
 
 
