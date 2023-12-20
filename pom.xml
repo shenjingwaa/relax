@@ -200,6 +200,7 @@
 
 <!--        </pluginManagement>-->
     </build>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -219,6 +220,12 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <scm>
+        <url>https://github.com/shenjingwaa/relax</url>
+        <connection>https://github.com/shenjingwaa/relax.git</connection>
+        <developerConnection>https://github.com/shenjingwaa/relax.git</developerConnection>
+    </scm>
 
 
 </project>
