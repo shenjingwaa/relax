@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j
-@Component
 public class SelectPageOperation extends SqlOperation{
 
     private final JdbcTemplate jdbcTemplate;

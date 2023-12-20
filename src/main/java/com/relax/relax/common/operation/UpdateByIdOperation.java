@@ -2,6 +2,7 @@ package com.relax.relax.common.operation;
 
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.utils.RegexUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Component
+@Slf4j
 public class UpdateByIdOperation extends SqlOperation {
 
     private final JdbcTemplate jdbcTemplate;

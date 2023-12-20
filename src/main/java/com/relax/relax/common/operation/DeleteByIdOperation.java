@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Component
 public class DeleteByIdOperation extends SqlOperation {
 
     private final JdbcTemplate jdbcTemplate;

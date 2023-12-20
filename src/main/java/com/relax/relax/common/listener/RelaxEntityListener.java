@@ -5,7 +5,6 @@ import com.relax.relax.common.annotation.RelaxEntity;
 import com.relax.relax.common.processor.RelaxEntityProcessor;
 import com.relax.relax.common.properties.RelaxConfigProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -33,7 +32,7 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
     }
 
     @Override
-    public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         Class<?> mainClass = event.getSpringApplication().getMainApplicationClass();
         if (mainClass.isAnnotationPresent(EnableRelax.class) && mainClass.getAnnotation(EnableRelax.class).isEnable()) {
             createTables();

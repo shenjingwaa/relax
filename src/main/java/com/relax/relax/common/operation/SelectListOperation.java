@@ -11,7 +11,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @Slf4j
-@Component
 public class SelectListOperation extends SqlOperation{
 
     private final JdbcTemplate jdbcTemplate;

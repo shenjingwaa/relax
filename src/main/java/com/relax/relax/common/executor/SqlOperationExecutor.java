@@ -1,10 +1,8 @@
-package com.relax.relax.common.factory;
+package com.relax.relax.common.executor;
 
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.operation.SqlOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -14,11 +12,9 @@ import java.util.Objects;
  * 生成基础业务sql
  */
 @Slf4j
-@Component("sqlOperationFactory")
-public class SqlOperationFactory {
+public class SqlOperationExecutor {
 
-    @Autowired
-    private List<SqlOperation> sqlOperationList;
+    private final List<SqlOperation> sqlOperationList;
 
 
     /**
@@ -34,6 +30,10 @@ public class SqlOperationFactory {
             }
         }
         throw new IllegalArgumentException("Unsupported operation: " + sqlEnum.name());
+    }
+
+    public SqlOperationExecutor(List<SqlOperation> sqlOperationList) {
+        this.sqlOperationList = sqlOperationList;
     }
 
 
