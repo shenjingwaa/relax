@@ -1,13 +1,13 @@
 package com.relax.relax.common.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.executor.SqlOperationExecutor;
+import com.relax.relax.common.utils.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,7 +28,7 @@ public class BaseController<T> {
     public RelaxResult add(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
-            BeanUtil.copyProperties(entity, instance);
+            BeanUtils.copyProperties(entity,instance);
             log.debug("execute add method success,requestBody is {}", entity);
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.INSERT,request,instance)
@@ -45,7 +45,7 @@ public class BaseController<T> {
     public RelaxResult update(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
-            BeanUtil.copyProperties(entity, instance);
+            BeanUtils.copyProperties(entity,instance);
             log.debug("execute update method ,requestBody is {}", entity);
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.UPDATE_BY_ID,request,instance)
@@ -62,7 +62,7 @@ public class BaseController<T> {
     public RelaxResult delete(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
-            BeanUtil.copyProperties(entity, instance);
+            BeanUtils.copyProperties(entity,instance);
             log.debug("execute delete method ,requestBody is {}", entity);
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.DELETE_BY_ID,request,instance)
@@ -105,7 +105,7 @@ public class BaseController<T> {
     public RelaxResult page(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
-            BeanUtil.copyProperties(entity, instance);
+            BeanUtils.copyProperties(entity,instance);
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE,request,instance)
             );
@@ -121,7 +121,7 @@ public class BaseController<T> {
     public RelaxResult list(@RequestBody T entity,HttpServletRequest request) {
         try {
             T instance = baseEntityClass.newInstance();
-            BeanUtil.copyProperties(entity, instance);
+            BeanUtils.copyProperties(entity,instance);
             return RelaxResult.success(
                     SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_LIST,request,instance)
             );
