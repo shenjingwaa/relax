@@ -18,15 +18,17 @@ public class ColumnSqlBuilder {
         if (field.isAnnotationPresent(RelaxColumn.class) && !field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
             RelaxColumn relaxColumn = field.getAnnotation(RelaxColumn.class);
             processColumnAnnotation(relaxColumn, createTableSql);
-        } else {
+        } else if (field.isAnnotationPresent(RelaxColumn.class) && field.getAnnotation(RelaxColumn.class).type().isEmpty()){
             Class<?> type = field.getType();
             ColumnType columnType = getTypeStrategy(type);
             if (columnType != null) {
                 createTableSql.append(columnType.getSqlType());
             } else {
-                log.warn(type + "not default column type, please specify column type in @RelaxColumn");
+                log.warn("[relax] "+type + "not default column type, please specify column type in @RelaxColumn");
                 return "";
             }
+        }else {
+            return "";
         }
         createTableSql.append(splicingPrimary(field));
         createTableSql.append(", ");
