@@ -1,9 +1,11 @@
 package com.relax.relax.common.builder;
 
 import com.relax.relax.common.executor.TableNameExtractor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 
+@Slf4j
 public class CreateTableSqlBuilder {
     private final Class<?> entityClass;
 
@@ -20,6 +22,7 @@ public class CreateTableSqlBuilder {
         createTableSql.delete(createTableSql.length() - 2, createTableSql.length());
         createTableSql.append(");");
 
+        log.info("[relax] Table SQL for {} generation successful.",getTableName());
         return createTableSql.toString();
     }
 

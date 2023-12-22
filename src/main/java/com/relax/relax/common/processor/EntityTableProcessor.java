@@ -5,12 +5,14 @@ import com.relax.relax.common.annotation.RelaxEntity;
 import com.relax.relax.common.builder.CreateTableSqlBuilder;
 import com.relax.relax.common.executor.DatabaseExecutor;
 import com.relax.relax.common.executor.TableNameExtractor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Slf4j
 public class EntityTableProcessor {
     private final Class<?> entityClass;
 
@@ -44,7 +46,9 @@ public class EntityTableProcessor {
     }
 
     public void executeCreateTableSql(Connection connection, String createTableSql) throws SQLException {
+        log.info("[relax] Start to create tables.");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         databaseExecutor.executeCreateTableSql(connection, createTableSql, getTableName());
+        log.info("[relax] Create table end.");
     }
 }
