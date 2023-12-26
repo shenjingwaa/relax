@@ -1,5 +1,6 @@
 package com.relax.relax;
 
+import com.relax.relax.common.banner.BannerPrinter;
 import com.relax.relax.common.executor.SqlOperationExecutor;
 import com.relax.relax.common.handler.BaseMappingHandler;
 import com.relax.relax.common.listener.RelaxEntityListener;
@@ -17,6 +18,11 @@ import java.util.List;
 @EnableConfigurationProperties(RelaxConfigProperties.class)
 @Configuration
 public class RelaxAutoConfiguration {
+
+    @Bean
+    public BannerPrinter bannerPrinter(){
+        return new BannerPrinter();
+    }
 
     @Bean
     public InsertOperation insertOperation(JdbcTemplate jdbcTemplate) {
