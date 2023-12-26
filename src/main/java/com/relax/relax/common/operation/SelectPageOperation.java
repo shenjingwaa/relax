@@ -3,7 +3,6 @@ package com.relax.relax.common.operation;
 import com.relax.relax.common.enums.SqlType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -18,8 +17,16 @@ public class SelectPageOperation extends SqlOperation{
 
     @Override
     public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
-        long pageNum = Long.parseLong(request.getParameter("pageNum"));
-        long pageSize = Long.parseLong(request.getParameter("pageSize"));
+        String num = request.getParameter("pageNum");
+        if (Objects.isNull(num) || num.isEmpty() || Long.parseLong(num) <= 0) {
+            num = "1";
+        }
+        String size = request.getParameter("pageSize");
+        if (Objects.isNull(size) || size.isEmpty() || Long.parseLong(size) <= 0) {
+            size = "10";
+        }
+        long pageNum = Long.parseLong(num);
+        long pageSize = Long.parseLong(size);
 
         Class<?> targetClass = param.getClass();
         HashMap<String, Object> result = new HashMap<>();
