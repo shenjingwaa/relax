@@ -13,7 +13,7 @@ public @interface RelaxClass {
      * 动态增删改查接口的前缀
      * 前缀请不要携带 '/'
      */
-    String prefix();
+    String[] prefix() default {};
 
     /**
      * 需要自动生成的方法
