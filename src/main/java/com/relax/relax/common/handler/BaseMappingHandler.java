@@ -60,7 +60,7 @@ public class BaseMappingHandler implements ApplicationContextAware, ApplicationL
                     RequestMapping requestMapping = beanClass.getDeclaredAnnotation(RequestMapping.class);
                     if ((Objects.isNull(requestMapping) || requestMapping.value().length==0) &&
                             (relaxClass.prefix().length==0)){
-                        log.info("[relax] Your controller must identify the path prefix in the @RelaxClass and @RequestMapping for class {}.",beanClass.getName());
+                        log.error("[relax] Your controller must identify the path prefix in the @RelaxClass and @RequestMapping for class {}.",beanClass.getName());
                         return;
                     }
                     for (Method method : BaseController.class.getMethods()) {
