@@ -10,12 +10,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -32,7 +32,15 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        if (!configProperties.isAutoCreateTable()) {
+            log.info("[relax] disable auto create table.");
+            return;
+        }
+        log.info("[relax] enable auto create table.");
         Class<?> mainClass = event.getSpringApplication().getMainApplicationClass();
+        if (Objects.isNull(configProperties.getEntityLocations()))
+            configProperties.setEntityLocations(mainClass.getPackage().getName());
+        log.info("[relax] entity locations is {}", configProperties.getEntityLocations());
         if (mainClass.isAnnotationPresent(EnableRelax.class) && mainClass.getAnnotation(EnableRelax.class).isEnable()) {
             createTables();
         }

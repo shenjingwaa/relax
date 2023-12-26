@@ -11,7 +11,7 @@ public class DatabaseExecutor {
     public void executeCreateTableSql(Connection connection, String createTableSql, String tableName) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(createTableSql)) {
             preparedStatement.executeUpdate();
-            log.info("Table created: " + tableName);
+            log.info("[relax] Table created: " + tableName);
         }
     }
 }
