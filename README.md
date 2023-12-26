@@ -46,8 +46,7 @@ public class RelaxUser {
 ```
 ### 创建接口
 ```java
-//@RelaxClass中的路径前缀不能与其他控制器重复
-@RelaxClass(prefix = "/relaxUser", entityType = RelaxUser.class)
+@RelaxClass(entityType = RelaxUser.class)
 @RestController
 @RequestMapping("/relaxUser")
 public class RelaxUserController {
