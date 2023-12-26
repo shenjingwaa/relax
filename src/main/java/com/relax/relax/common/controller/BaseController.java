@@ -1,5 +1,6 @@
 package com.relax.relax.common.controller;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
@@ -19,8 +20,6 @@ public class BaseController<T> {
 
     private final Class<T> baseEntityClass;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     public BaseController(Class<T> baseEntityClass) {
         this.baseEntityClass = baseEntityClass;
     }
@@ -28,35 +27,35 @@ public class BaseController<T> {
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult add(@RequestBody T entity,HttpServletRequest request) {
-        T instance = mapper.convertValue(entity, baseEntityClass);
+        T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.INSERT, request, instance));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult update(@RequestBody T entity,HttpServletRequest request) {
-        T instance = mapper.convertValue(entity, baseEntityClass);
+        T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.UPDATE_BY_ID, request, instance));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult delete(@RequestBody T entity,HttpServletRequest request) {
-        T instance = mapper.convertValue(entity, baseEntityClass);
+        T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.DELETE_BY_ID, request, instance));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult page(@RequestBody T entity, HttpServletRequest request) {
-        T instance = mapper.convertValue(entity, baseEntityClass);
+        T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult list(@RequestBody T entity, HttpServletRequest request) {
-        T instance = mapper.convertValue(entity, baseEntityClass);
+        T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_LIST, request, instance));
     }
 
