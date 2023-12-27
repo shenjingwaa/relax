@@ -1,7 +1,6 @@
 package com.relax.relax.common.controller;
 
 import com.alibaba.fastjson2.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.enums.SqlType;
