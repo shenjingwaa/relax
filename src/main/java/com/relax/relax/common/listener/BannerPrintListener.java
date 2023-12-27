@@ -1,9 +1,9 @@
-package com.relax.relax.common.banner;
+package com.relax.relax.common.listener;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 
-public class BannerPrinter implements ApplicationListener<ApplicationReadyEvent> {
+public class BannerPrintListener implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         System.out.println(RELAX_BANNER);

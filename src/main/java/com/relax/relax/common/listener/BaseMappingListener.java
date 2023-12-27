@@ -1,4 +1,4 @@
-package com.relax.relax.common.handler;
+package com.relax.relax.common.listener;
 
 import com.relax.relax.common.annotation.EnableRelax;
 import com.relax.relax.common.annotation.MappingType;
@@ -23,11 +23,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class BaseMappingHandler implements ApplicationContextAware, ApplicationListener<ApplicationReadyEvent> {
+public class BaseMappingListener implements ApplicationContextAware, ApplicationListener<ApplicationReadyEvent> {
 
     private final ApplicationContext context;
 
-    public BaseMappingHandler(ApplicationContext context) {
+    public BaseMappingListener(ApplicationContext context) {
         this.context = context;
     }
 

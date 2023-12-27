@@ -1,8 +1,8 @@
 package com.relax.relax;
 
-import com.relax.relax.common.banner.BannerPrinter;
+import com.relax.relax.common.listener.BannerPrintListener;
 import com.relax.relax.common.executor.SqlOperationExecutor;
-import com.relax.relax.common.handler.BaseMappingHandler;
+import com.relax.relax.common.listener.BaseMappingListener;
 import com.relax.relax.common.listener.RelaxEntityListener;
 import com.relax.relax.common.operation.*;
 import com.relax.relax.common.properties.RelaxConfigProperties;
@@ -20,8 +20,8 @@ import java.util.List;
 public class RelaxAutoConfiguration {
 
     @Bean
-    public BannerPrinter bannerPrinter(){
-        return new BannerPrinter();
+    public BannerPrintListener bannerPrinter(){
+        return new BannerPrintListener();
     }
 
     @Bean
@@ -60,8 +60,8 @@ public class RelaxAutoConfiguration {
     }
 
     @Bean
-    public BaseMappingHandler baseMappingHandler(ApplicationContext context) {
-        return new BaseMappingHandler(context);
+    public BaseMappingListener baseMappingHandler(ApplicationContext context) {
+        return new BaseMappingListener(context);
     }
 
     @Bean
