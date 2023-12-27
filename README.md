@@ -10,11 +10,19 @@
 </dependency>
 ```
 ### 开启
-项目启动类中使用 @EnableRelax
+```java
+@EnableRelax
+@SpringBootApplication
+public class RelaxApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(RelaxApplication.class, args);
+    }
+}
+```
 
-###### 注:
-###### 如果需要开启自动表创建,需在application配置文件中增加配置relax.auto-create-table: true
-###### 该配置默认关闭,建议在dev环境开启,prod环境关闭该功能!
+> ###### 注:
+> ###### 如果需要开启自动表创建,需在application配置文件中增加配置relax.auto-create-table: true
+> ###### 该配置默认关闭,建议在dev环境开启,prod环境关闭该功能!
 
 
 ## 快速CRUD
