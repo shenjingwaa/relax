@@ -16,7 +16,7 @@ public class SelectOneOperation extends SqlOperation{
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
+    public <E> Map<String, Object> executeSql(HttpServletRequest request, Object param, Class<E> resultClass) {
         HashMap<String, Object> result = new HashMap<>();
         Class<?> paramClass = param.getClass();
         String selectOneSql = "select * from relaxTableName where relaxRowIdName = ? ";

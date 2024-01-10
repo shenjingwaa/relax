@@ -6,6 +6,7 @@ import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.executor.SqlOperationExecutor;
 import com.relax.relax.common.utils.SpringUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,35 +28,39 @@ public class BaseController<T> {
     @ResponseBody
     public RelaxResult add(@RequestBody T entity,HttpServletRequest request) {
         T instance = JSON.to(baseEntityClass, entity);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.INSERT, request, instance));
+        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.INSERT, request, instance,baseEntityClass));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult update(@RequestBody T entity,HttpServletRequest request) {
         T instance = JSON.to(baseEntityClass, entity);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.UPDATE_BY_ID, request, instance));
+        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.UPDATE_BY_ID, request, instance,baseEntityClass));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult delete(@RequestBody T entity,HttpServletRequest request) {
         T instance = JSON.to(baseEntityClass, entity);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.DELETE_BY_ID, request, instance));
+        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.DELETE_BY_ID, request, instance,baseEntityClass));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult page(@RequestBody T entity, HttpServletRequest request) {
+    public RelaxResult page(@RequestBody T entity, HttpServletRequest request) throws InstantiationException, IllegalAccessException {
         T instance = JSON.to(baseEntityClass, entity);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance));
+        T targetResult = baseEntityClass.newInstance();
+        BeanUtils.copyProperties(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance,baseEntityClass),targetResult);
+        return RelaxResult.success(targetResult);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult list(@RequestBody T entity, HttpServletRequest request) {
+    public RelaxResult list(@RequestBody T entity, HttpServletRequest request) throws InstantiationException, IllegalAccessException {
         T instance = JSON.to(baseEntityClass, entity);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_LIST, request, instance));
+        T targetResult = baseEntityClass.newInstance();
+        BeanUtils.copyProperties(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance,baseEntityClass),targetResult);
+        return RelaxResult.success(targetResult);
     }
 
     @MappingType(RequestMethod.GET)
@@ -78,7 +83,10 @@ public class BaseController<T> {
         } else {
             throw new IllegalArgumentException("args format error.");
         }
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_ONE, request, instance));
+
+        T targetResult = baseEntityClass.newInstance();
+        BeanUtils.copyProperties(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance,baseEntityClass),targetResult);
+        return RelaxResult.success(targetResult);
     }
 
 }
