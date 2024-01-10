@@ -16,7 +16,7 @@ public class SelectListOperation extends SqlOperation{
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
+    public <E> Map<String, Object> executeSql(HttpServletRequest request, Object param, Class<E> resultClass) {
         Class<?> targetClass = param.getClass();
         HashMap<String, Object> result = new HashMap<>();
         String selectListSql = "select * from relaxTableName where 1=1 relaxSelectSql ";

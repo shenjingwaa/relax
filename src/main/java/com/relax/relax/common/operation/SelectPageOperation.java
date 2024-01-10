@@ -16,7 +16,7 @@ public class SelectPageOperation extends SqlOperation{
 
 
     @Override
-    public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
+    public <E> Map<String, Object> executeSql(HttpServletRequest request, Object param, Class<E> resultClass) {
         String num = request.getParameter("pageNum");
         if (Objects.isNull(num) || num.isEmpty() || Long.parseLong(num) <= 0) {
             num = "1";
@@ -41,7 +41,10 @@ public class SelectPageOperation extends SqlOperation{
 
         selectListSql = args.remove(args.size() - 1);
         String suffix = " limit " + (pageNum - 1) * pageSize + "," + pageSize;
-        result.put("page", jdbcTemplate.queryForList(selectListSql + suffix, args.toArray()));
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(selectListSql + suffix, args.toArray());
+
+
+        result.put("page", maps);
         selectListSql = selectListSql.replace("*", "count(1) as total");
         result.put("total", jdbcTemplate.queryForObject(selectListSql, Object.class,args.toArray()));
 

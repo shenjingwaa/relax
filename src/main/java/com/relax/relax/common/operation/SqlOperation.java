@@ -20,12 +20,12 @@ public abstract class SqlOperation {
     /**
      * 创建sql
      */
-    protected abstract Map<String, Object> executeSql(HttpServletRequest request, Object param);
+    protected abstract <E> Map<String, Object> executeSql(HttpServletRequest request, Object param,Class<E> resultClass);
 
     protected abstract boolean check(SqlType sqlEnum);
 
-    public Object execute(SqlType sqlEnum, HttpServletRequest request, Object param) {
-        if (check(sqlEnum)) return executeSql(request, param);
+    public <T> Object execute(SqlType sqlEnum, HttpServletRequest request, Object param,Class<T> resultClass) {
+        if (check(sqlEnum)) return executeSql(request, param,resultClass);
         return null;
     }
 

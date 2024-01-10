@@ -16,7 +16,7 @@ public class UpdateByIdOperation extends SqlOperation {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
+    public <E> Map<String, Object> executeSql(HttpServletRequest request, Object param, Class<E> resultClass) {
         String updateSql = "update relaxTableName SET relaxSet where relaxRowIdName = ?";
         Map<String, Object> result = new HashMap<>();
         Class<?> targetClass = param.getClass();

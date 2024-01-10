@@ -20,11 +20,12 @@ public class SqlOperationExecutor {
     /**
      * 获取待执行的sql
      */
-    public Object submit(SqlType sqlEnum,
+    public <T> Object submit(SqlType sqlEnum,
                          HttpServletRequest request,
-                         Object param) {
+                         Object param,
+                         Class<T> resultClass) {
         for (SqlOperation operation : sqlOperationList) {
-            Object result = operation.execute(sqlEnum, request, param);
+            Object result = operation.execute(sqlEnum, request, param,resultClass);
             if (Objects.nonNull(result)){
                 return result;
             }

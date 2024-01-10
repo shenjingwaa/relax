@@ -16,7 +16,7 @@ public class DeleteByIdOperation extends SqlOperation {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Map<String, Object> executeSql(HttpServletRequest request, Object param) {
+    public <E> Map<String, Object> executeSql(HttpServletRequest request, Object param, Class<E> resultClass) {
         Class<?> targetClass = param.getClass();
         HashMap<String, Object> result = new HashMap<>();
         String deleteSql = "delete from relaxTableName where relaxRowIdName = ?";
