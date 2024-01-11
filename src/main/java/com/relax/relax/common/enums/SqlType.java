@@ -14,7 +14,7 @@ public enum SqlType {
     INSERT,
     UPDATE_BY_ID,
     DELETE_BY_ID,
-    SELECT_ONE,
+    SELECT_BY_ID,
     SELECT_LIST,
     SELECT_PAGE,
     ;

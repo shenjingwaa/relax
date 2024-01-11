@@ -45,8 +45,8 @@ public class RelaxAutoConfiguration {
     }
 
     @Bean
-    public SelectOneOperation selectOneOperation(JdbcTemplate jdbcTemplate) {
-        return new SelectOneOperation(jdbcTemplate);
+    public SelectByIdOperation selectOneOperation(JdbcTemplate jdbcTemplate) {
+        return new SelectByIdOperation(jdbcTemplate);
     }
 
     @Bean

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -20,12 +21,12 @@ public class SqlOperationExecutor {
     /**
      * 获取待执行的sql
      */
-    public <T> Object submit(SqlType sqlEnum,
+    public <T> Map<String, Object> submit(SqlType sqlEnum,
                          HttpServletRequest request,
                          Object param,
                          Class<T> resultClass) {
         for (SqlOperation operation : sqlOperationList) {
-            Object result = operation.execute(sqlEnum, request, param,resultClass);
+            Map<String, Object> result = operation.execute(sqlEnum, request, param,resultClass);
             if (Objects.nonNull(result)){
                 return result;
             }

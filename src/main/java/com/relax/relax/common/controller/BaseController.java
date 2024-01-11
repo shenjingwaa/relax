@@ -5,15 +5,21 @@ import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.executor.SqlOperationExecutor;
+import com.relax.relax.common.utils.BeanUtil;
 import com.relax.relax.common.utils.SpringUtil;
-import org.springframework.beans.BeanUtils;
+import lombok.Data;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class BaseController<T> {
@@ -49,18 +55,24 @@ public class BaseController<T> {
     @ResponseBody
     public RelaxResult page(@RequestBody T entity, HttpServletRequest request) throws InstantiationException, IllegalAccessException {
         T instance = JSON.to(baseEntityClass, entity);
-        T targetResult = baseEntityClass.newInstance();
-        BeanUtils.copyProperties(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance,baseEntityClass),targetResult);
-        return RelaxResult.success(targetResult);
+        Map<String, Object> result = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance, baseEntityClass);
+        List<Map<String, Object>> page = (List<Map<String, Object>>) result.get("page");
+        result.put("page", page.stream()
+                .map(map -> BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase(map), baseEntityClass, true))
+                .collect(Collectors.toList()));
+        return RelaxResult.success(result);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult list(@RequestBody T entity, HttpServletRequest request) throws InstantiationException, IllegalAccessException {
         T instance = JSON.to(baseEntityClass, entity);
-        T targetResult = baseEntityClass.newInstance();
-        BeanUtils.copyProperties(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance,baseEntityClass),targetResult);
-        return RelaxResult.success(targetResult);
+        Map<String, Object> result = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_LIST, request, instance, baseEntityClass);
+        List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("list");
+        result.put("list", list.stream()
+                .map(map -> BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase(map), baseEntityClass, true))
+                .collect(Collectors.toList()));
+        return RelaxResult.success(result);
     }
 
     @MappingType(RequestMethod.GET)
@@ -69,6 +81,7 @@ public class BaseController<T> {
         T instance = baseEntityClass.newInstance();
         String uniqueFieldName = SqlType.getUniqueFieldName(instance);
         String parameter = request.getParameter(uniqueFieldName);
+        Assert.isTrue(Objects.nonNull(parameter) && !parameter.isEmpty(),"唯一标识不能为空!");
 
         Field field = baseEntityClass.getDeclaredField(uniqueFieldName);
         field.setAccessible(true);
@@ -83,10 +96,19 @@ public class BaseController<T> {
         } else {
             throw new IllegalArgumentException("args format error.");
         }
+        Map<String, Object> result = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_BY_ID, request, instance, baseEntityClass);
+        T finalResult = BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase((Map<String, Object>) result.get("info")), baseEntityClass, true);
+        result.put("info", finalResult);
+        return RelaxResult.success(finalResult);
+    }
 
-        T targetResult = baseEntityClass.newInstance();
-        BeanUtils.copyProperties(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance,baseEntityClass),targetResult);
-        return RelaxResult.success(targetResult);
+    @Data
+    public class TstResult {
+
+        private String msg;
+
+        private Object list;
+
     }
 
 }

@@ -24,7 +24,7 @@ public abstract class SqlOperation {
 
     protected abstract boolean check(SqlType sqlEnum);
 
-    public <T> Object execute(SqlType sqlEnum, HttpServletRequest request, Object param,Class<T> resultClass) {
+    public <T> Map<String, Object> execute(SqlType sqlEnum, HttpServletRequest request, Object param,Class<T> resultClass) {
         if (check(sqlEnum)) return executeSql(request, param,resultClass);
         return null;
     }

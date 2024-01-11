@@ -1,5 +1,7 @@
 package com.relax.relax.common.annotation;
 
+import com.relax.relax.common.enums.QueryType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,4 +19,6 @@ public @interface RelaxColumn {
     String type() default "";
 
     String length() default "";
+
+    QueryType queryType() default QueryType.ALL_MATCH;
 }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -13,6 +14,10 @@ public class BeanUtil {
     }
 
     public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, boolean isToCamelCase) {
+        return mapToBean(map, beanClass, isToCamelCase, '_');
+    }
+
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, boolean isToCamelCase, char symbol) {
         if (map == null) {
             return null;
         }
@@ -32,7 +37,7 @@ public class BeanUtil {
                 //将指定对象变量上此 Field 对象表示的字段设置为指定的新值.
                 String fieldName = field.getName();
                 if (isToCamelCase) {
-                    fieldName = toCamelCase(fieldName, '-');
+                    fieldName = toCamelCase(fieldName, symbol,false);
                 }
                 field.set(object, map.get(fieldName));
             }
@@ -42,7 +47,7 @@ public class BeanUtil {
         return object;
     }
 
-    public static String toCamelCase(CharSequence name, char symbol) {
+    public static String toCamelCase(CharSequence name, char symbol,boolean isToLower) {
         if (null == name) {
             return null;
         }
@@ -65,8 +70,19 @@ public class BeanUtil {
                 }
             }
             return sb.toString();
-        } else {
+        } else if (isToLower){
+            return name2.toLowerCase();
+        }else {
             return name2;
         }
+    }
+
+    public static <V> Map<String, V> mapKVToCamelCase(Map<String, V> map) {
+        HashMap<String, V> beCamelCaseMap = new HashMap<>();
+        map.forEach((k, v) -> {
+            String camelCase = toCamelCase(k, '_',true);
+            beCamelCaseMap.put(camelCase,v);
+        });
+        return beCamelCaseMap;
     }
 }

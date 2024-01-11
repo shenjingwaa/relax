@@ -1,10 +1,11 @@
 package com.relax.relax.common.operation;
 
+import com.relax.relax.common.annotation.RelaxColumn;
+import com.relax.relax.common.enums.QueryType;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -38,7 +39,11 @@ public class SelectListOperation extends SqlOperation{
                                                 Object param,
                                                 String selectListSql
     ) {
-        String relaxSelectItem = "and relaxFieldName = ? ";
+        String relaxSelectItemForAllMatch = "and relaxFieldName = ? ";
+        String relaxSelectItemForLeftLike = "and relaxFieldName like CONCAT('%',?,'') ";
+        String relaxSelectItemForRightLike = "and relaxFieldName like CONCAT('',?,'%') ";
+        String relaxSelectItemForAllLike = "and relaxFieldName like CONCAT('%',?,'%') ";
+
         StringBuilder relaxSelectSql = new StringBuilder();
         List<String> args = new ArrayList<>();
         for (Field field : getRelaxField(targetClass)) {
@@ -52,7 +57,13 @@ public class SelectListOperation extends SqlOperation{
             if (Objects.isNull(fieldValue)) {
                 continue;
             }
-            relaxSelectSql.append(relaxSelectItem.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+            RelaxColumn relaxColumn = field.getAnnotation(RelaxColumn.class);
+            QueryType queryType = relaxColumn.queryType();
+            if (Objects.equals(QueryType.ALL_MATCH, queryType)) relaxSelectSql.append(relaxSelectItemForAllMatch.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+            if (Objects.equals(QueryType.LEFT_LIKE, queryType)) relaxSelectSql.append(relaxSelectItemForLeftLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+            if (Objects.equals(QueryType.RIGHT_LIKE, queryType)) relaxSelectSql.append(relaxSelectItemForRightLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+            if (Objects.equals(QueryType.ALL_LIKE, queryType)) relaxSelectSql.append(relaxSelectItemForAllLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+
             args.add(fieldValue.toString());
         }
         if (args.isEmpty()) {

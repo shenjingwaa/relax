@@ -3,7 +3,6 @@ package com.relax.relax.common.operation;
 import com.relax.relax.common.enums.SqlType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -11,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-public class SelectOneOperation extends SqlOperation{
+public class SelectByIdOperation extends SqlOperation{
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -34,10 +33,10 @@ public class SelectOneOperation extends SqlOperation{
 
     @Override
     public boolean check(SqlType sqlEnum) {
-        return Objects.equals(sqlEnum, SqlType.SELECT_ONE);
+        return Objects.equals(sqlEnum, SqlType.SELECT_BY_ID);
     }
 
-    public SelectOneOperation(JdbcTemplate jdbcTemplate) {
+    public SelectByIdOperation(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
