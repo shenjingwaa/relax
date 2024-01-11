@@ -9,12 +9,13 @@ import com.relax.relax.common.utils.BeanUtil;
 import com.relax.relax.common.utils.SpringUtil;
 import lombok.Data;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,14 @@ public class BaseController<T> {
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult add(@RequestBody T entity,HttpServletRequest request) {
+    public RelaxResult add(@RequestBody @Valid T entity, HttpServletRequest request) {
         T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.INSERT, request, instance,baseEntityClass));
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult update(@RequestBody T entity,HttpServletRequest request) {
+    public RelaxResult update(@RequestBody @Valid T entity,HttpServletRequest request) {
         T instance = JSON.to(baseEntityClass, entity);
         return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.UPDATE_BY_ID, request, instance,baseEntityClass));
     }
@@ -100,15 +101,6 @@ public class BaseController<T> {
         T finalResult = BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase((Map<String, Object>) result.get("info")), baseEntityClass, true);
         result.put("info", finalResult);
         return RelaxResult.success(finalResult);
-    }
-
-    @Data
-    public class TstResult {
-
-        private String msg;
-
-        private Object list;
-
     }
 
 }

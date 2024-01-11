@@ -6,6 +6,7 @@ import com.relax.relax.common.annotation.RelaxClass;
 import com.relax.relax.common.controller.BaseController;
 import com.relax.relax.common.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
@@ -55,8 +56,9 @@ public class BaseMappingListener implements ApplicationContextAware, Application
     private void startToRegisterApi(RequestMappingHandlerMapping handlerMapping) {
         context.getBeansWithAnnotation(RelaxClass.class)
                 .forEach((relaxBeanName, relaxBean) -> {
-                    Class<?> beanClass = relaxBean.getClass();
+                    Class<?> beanClass = AopProxyUtils.ultimateTargetClass(relaxBean);
                     RelaxClass relaxClass = beanClass.getAnnotation(RelaxClass.class);
+
                     RequestMapping requestMapping = beanClass.getDeclaredAnnotation(RequestMapping.class);
                     if ((Objects.isNull(requestMapping) || requestMapping.value().length==0) &&
                             (relaxClass.prefix().length==0)){
@@ -64,7 +66,7 @@ public class BaseMappingListener implements ApplicationContextAware, Application
                         return;
                     }
                     for (Method method : BaseController.class.getMethods()) {
-                        registerApiForMethod(relaxBean, method, relaxClass, handlerMapping);
+                        registerApiForMethod(beanClass, method, relaxClass, handlerMapping);
                     }
                 });
     }
@@ -72,13 +74,13 @@ public class BaseMappingListener implements ApplicationContextAware, Application
     /**
      * 通过各个通用方法执行api注册
      */
-    private void registerApiForMethod(Object relaxBean, Method method, RelaxClass relaxClass, RequestMappingHandlerMapping handlerMapping) {
+    private void registerApiForMethod(Class<?> beanClass, Method method, RelaxClass relaxClass, RequestMappingHandlerMapping handlerMapping) {
         // 获取用户选择自动映射的接口
         List<String> targetMethod = Arrays.stream(relaxClass.methods()).collect(Collectors.toList());
         //检查具有@MappingType注解的方法并且过滤不需要的接口
         if (method.isAnnotationPresent(MappingType.class) && targetMethod.contains(method.getName())) {
             //构建映射信息
-            RequestMapping requestMapping = relaxBean.getClass().getDeclaredAnnotation(RequestMapping.class);
+            RequestMapping requestMapping = beanClass.getDeclaredAnnotation(RequestMapping.class);
             String[] prefixs = null;
             if (Objects.nonNull(requestMapping) && requestMapping.value().length > 0) {
                 prefixs = requestMapping.value();
@@ -105,7 +107,6 @@ public class BaseMappingListener implements ApplicationContextAware, Application
                 .methods(method.getAnnotation(MappingType.class).value())
                 .build();
         log.debug("[relax] Do register api : {}", String.format("/%s/%s", prefix, method.getName()));
-
         //注册映射信息
         handlerMapping.registerMapping(mapping, new BaseController(relaxClass.entityType()), method);
     }
