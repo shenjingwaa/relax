@@ -1,6 +1,9 @@
 package com.relax.relax.common.operation;
 
+import com.relax.relax.common.annotation.RelaxId;
+import com.relax.relax.common.enums.IdType;
 import com.relax.relax.common.enums.SqlType;
+import com.relax.relax.common.utils.IdUtil;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,6 +49,7 @@ public class InsertOperation extends SqlOperation {
             log.error("[relax] The class attribute marked with @RelaxEntity must contain at least one field labeled with @RelaxColumn.");
             return null;
         }
+        fillUniqueColumn(targetClass, param);
 
         StringBuilder attrSb = new StringBuilder();
         for (Field field : fieldList) {
@@ -77,6 +81,26 @@ public class InsertOperation extends SqlOperation {
         baseSqlTemplate = String.format(baseSqlTemplate, tableName, attrSb, valueSb);
         values.add(baseSqlTemplate);
         return values;
+    }
+
+    /**
+     * 填充唯一标识
+     */
+    private void fillUniqueColumn(Class<?> targetClass, Object param) {
+        try {
+            Field uniqueField = targetClass.getDeclaredField(getUniqueColumn(targetClass));
+            uniqueField.setAccessible(true);
+            IdType idType = uniqueField.getAnnotation(RelaxId.class).value();
+            if (Objects.equals(idType, IdType.UUID)) {
+                uniqueField.set(param, IdUtil.getUuid());
+            } else if (Objects.equals(idType, IdType.SIMPLE_UUID)) {
+                uniqueField.set(param, IdUtil.getSimpleUuid());
+            } else if (Objects.equals(idType, IdType.SNOW_FLAKE)) {
+                uniqueField.set(param, IdUtil.getSnowNextId());
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public InsertOperation(JdbcTemplate jdbcTemplate) {
