@@ -12,11 +12,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.Assert;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.validation.Validator;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +31,11 @@ public class BaseMappingListener implements ApplicationContextAware, Application
 
     private final ApplicationContext context;
 
-    public BaseMappingListener(ApplicationContext context) {
+    private final ConfigurableApplicationContext configurableApplicationContext;
+
+    public BaseMappingListener(ApplicationContext context, ConfigurableApplicationContext configurableApplicationContext) {
         this.context = context;
+        this.configurableApplicationContext = configurableApplicationContext;
     }
 
     @Override

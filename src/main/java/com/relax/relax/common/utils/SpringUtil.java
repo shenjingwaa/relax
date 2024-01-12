@@ -4,9 +4,6 @@ import org.springframework.context.ApplicationContext;
 
 public class SpringUtil {
 
-    private SpringUtil() {
-    }
-
     private static ApplicationContext context;
 
 
@@ -16,5 +13,8 @@ public class SpringUtil {
 
     public static void setContext(ApplicationContext context) {
         SpringUtil.context = context;
+    }
+
+    private SpringUtil() {
     }
 }
