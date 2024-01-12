@@ -6,7 +6,6 @@ import org.springframework.validation.*;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ValidationException;
-import java.util.Objects;
 
 /**
  * 校验工具

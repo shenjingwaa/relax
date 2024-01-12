@@ -2,8 +2,8 @@ package com.relax.relax.common.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.relax.relax.common.annotation.MappingType;
-import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.constants.ValidationGroup;
+import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.executor.SqlOperationExecutor;
 import com.relax.relax.common.utils.BeanUtil;
