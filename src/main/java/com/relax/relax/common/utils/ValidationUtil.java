@@ -17,14 +17,11 @@ public class ValidationUtil {
     private static final SmartValidator smartValidator = SpringUtil.getBean(LocalValidatorFactoryBean.class);
 
     public static <T> void validate(T obj, @Nullable Object... validationHints) {
-        if (Objects.nonNull(smartValidator)) {
             Errors errors = new DirectFieldBindingResult(obj, obj.toString());
             ValidationUtils.invokeValidator(smartValidator, obj, errors, validationHints);
             for (ObjectError error : errors.getAllErrors()) {
                 throw new ValidationException(error.getDefaultMessage());
             }
-        }
     }
-
 
 }
