@@ -85,4 +85,7 @@ public class BeanUtil {
         });
         return beCamelCaseMap;
     }
+
+    private BeanUtil() {
+    }
 }

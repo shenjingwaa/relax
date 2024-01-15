@@ -1,0 +1,73 @@
+package com.relax.relax.common.listener;
+
+import com.relax.relax.common.annotation.RelaxClass;
+import com.relax.relax.common.cofig.RelaxProxyConfiguration;
+import com.relax.relax.common.container.EntityHandleContainer;
+import com.relax.relax.common.executor.ProxyAfterExecutor;
+import com.relax.relax.common.executor.ProxyBeforeExecutor;
+import com.relax.relax.common.proxy.node.conversion.DefaultInfoConversionProxyNode;
+import com.relax.relax.common.proxy.node.format.DefaultEntityFormatProxyNode;
+import com.relax.relax.common.proxy.node.format.DefaultInfoFormatProxyNode;
+import com.relax.relax.common.proxy.node.format.DefaultListFormatProxyNode;
+import com.relax.relax.common.proxy.node.format.DefaultPageFormatProxyNode;
+import com.relax.relax.common.proxy.node.validate.*;
+import com.relax.relax.common.utils.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+
+@Slf4j
+public class ProxyExecutorCreateListener implements ApplicationListener<ApplicationReadyEvent> {
+
+    private final ApplicationContext context;
+
+    public ProxyExecutorCreateListener(ApplicationContext context) {
+        this.context = context;
+    }
+
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        context.getBeansWithAnnotation(RelaxClass.class).forEach((beanName, bean) -> {
+            loadingBeforeExecutor(bean);
+
+            loadingAfterExecutor(bean);
+
+            try {
+                SpringUtil.getBean(RelaxProxyConfiguration.class).registerProxy();
+            } catch (Exception ignored) {
+            }
+        });
+    }
+
+    private static void loadingBeforeExecutor(Object bean) {
+        ProxyBeforeExecutor beforeExecutor = new ProxyBeforeExecutor();
+        beforeExecutor.setViewClass(bean.getClass());
+        beforeExecutor.setBaseEntityClass(EntityHandleContainer.get(bean.getClass()));
+
+        beforeExecutor.addProxy(new DefaultEntityFormatProxyNode());
+
+        beforeExecutor.addProxyAfter(DefaultEntityFormatProxyNode.class, new DefaultValidateAddProxyNode());
+        beforeExecutor.addProxyAfter(DefaultEntityFormatProxyNode.class, new DefaultValidateUpdateProxyNode());
+        beforeExecutor.addProxyAfter(DefaultEntityFormatProxyNode.class, new DefaultValidateDeleteProxyNode());
+        beforeExecutor.addProxyAfter(DefaultEntityFormatProxyNode.class, new DefaultValidateListProxyNode());
+        beforeExecutor.addProxyAfter(DefaultEntityFormatProxyNode.class, new DefaultValidatePageProxyNode());
+        beforeExecutor.addProxyAfter(DefaultEntityFormatProxyNode.class, new DefaultValidateInfoProxyNode());
+
+        beforeExecutor.addProxyAfter(DefaultValidateInfoProxyNode.class, new DefaultInfoConversionProxyNode());
+
+        SpringUtil.addBean(beforeExecutor, bean.getClass().getName() + "_" + ProxyBeforeExecutor.class.getSimpleName());
+    }
+
+    private static void loadingAfterExecutor(Object bean) {
+        ProxyAfterExecutor afterExecutor = new ProxyAfterExecutor();
+        afterExecutor.setViewClass(bean.getClass());
+        afterExecutor.setBaseEntityClass(EntityHandleContainer.get(bean.getClass()));
+
+        afterExecutor.addProxy(new DefaultPageFormatProxyNode());
+        afterExecutor.addProxy(new DefaultListFormatProxyNode());
+        afterExecutor.addProxy(new DefaultInfoFormatProxyNode());
+        SpringUtil.addBean(afterExecutor, bean.getClass().getName() + "_" + ProxyAfterExecutor.class.getSimpleName());
+    }
+}
