@@ -2,7 +2,7 @@
 
 * [首页](/)
 * [入门](_use)
-* [注解介绍](_annotaions)
+* [注解](_annotaions)
 * [扩展](_extend)
 
 
