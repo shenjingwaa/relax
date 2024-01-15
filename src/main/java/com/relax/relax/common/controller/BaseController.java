@@ -2,13 +2,15 @@ package com.relax.relax.common.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.relax.relax.common.annotation.MappingType;
+import com.relax.relax.common.container.EntityHandleContainer;
 import com.relax.relax.common.domain.RelaxResult;
 import com.relax.relax.common.constants.ValidationGroup;
+import com.relax.relax.common.enums.CrudOperationType;
 import com.relax.relax.common.enums.ProxyMethodType;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.executor.SqlOperationExecutor;
 import com.relax.relax.common.utils.BeanUtil;
-import com.relax.relax.common.utils.ProxyUtil;
+import com.relax.relax.common.utils.RelaxProxyUtil;
 import com.relax.relax.common.utils.SpringUtil;
 import com.relax.relax.common.utils.ValidationUtil;
 import org.springframework.util.Assert;
@@ -34,86 +36,50 @@ public class BaseController<T> {
     public BaseController(Class<T> baseEntityClass, Class<?> viewClass) {
         this.baseEntityClass = baseEntityClass;
         this.viewClass = viewClass;
+        EntityHandleContainer.mapping(viewClass, baseEntityClass);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
     public RelaxResult add(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
-        T instance = JSON.to(baseEntityClass, entity);
-        instance = ProxyUtil.getProxyBeforeExecutorBean(viewClass).run(instance, ProxyMethodType.ADD, request, response);
-
-        Map<String, Object> submit = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.INSERT, request, entity, baseEntityClass);
-        Object result = ProxyUtil.getProxyAfterExecutorBean(viewClass).run(submit, ProxyMethodType.ADD, request, response);
-        return RelaxResult.success(result);
+        return performCrudOperation(entity, request, response, CrudOperationType.ADD);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult update(@RequestBody T entity, HttpServletRequest request) {
-        T instance = JSON.to(baseEntityClass, entity);
-        ValidationUtil.validate(instance, ValidationGroup.Update.class);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.UPDATE_BY_ID, request, instance, baseEntityClass));
+    public RelaxResult update(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
+        return performCrudOperation(entity, request, response, CrudOperationType.UPDATE);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult delete(@RequestBody T entity, HttpServletRequest request) {
-        T instance = JSON.to(baseEntityClass, entity);
-        ValidationUtil.validate(instance, ValidationGroup.Delete.class);
-        return RelaxResult.success(SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.DELETE_BY_ID, request, instance, baseEntityClass));
+    public RelaxResult delete(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
+        return performCrudOperation(entity, request, response, CrudOperationType.DELETE);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult page(@RequestBody T entity, HttpServletRequest request) throws InstantiationException, IllegalAccessException {
-        T instance = JSON.to(baseEntityClass, entity);
-        ValidationUtil.validate(instance, ValidationGroup.Page.class);
-        Map<String, Object> result = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_PAGE, request, instance, baseEntityClass);
-        List<Map<String, Object>> page = (List<Map<String, Object>>) result.get("page");
-        result.put("page", page.stream()
-                .map(map -> BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase(map), baseEntityClass, true))
-                .collect(Collectors.toList()));
-        return RelaxResult.success(result);
+    public RelaxResult page(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
+        return performCrudOperation(entity, request, response, CrudOperationType.PAGE);
     }
 
     @MappingType(RequestMethod.POST)
     @ResponseBody
-    public RelaxResult list(@RequestBody T entity, HttpServletRequest request) throws InstantiationException, IllegalAccessException {
-        T instance = JSON.to(baseEntityClass, entity);
-        ValidationUtil.validate(instance, ValidationGroup.List.class);
-        Map<String, Object> result = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_LIST, request, instance, baseEntityClass);
-        List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("list");
-        result.put("list", list.stream()
-                .map(map -> BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase(map), baseEntityClass, true))
-                .collect(Collectors.toList()));
-        return RelaxResult.success(result);
+    public RelaxResult list(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
+        return performCrudOperation(entity, request, response, CrudOperationType.LIST);
     }
 
     @MappingType(RequestMethod.GET)
     @ResponseBody
-    public RelaxResult info(HttpServletRequest request) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
-        T instance = baseEntityClass.newInstance();
-        String uniqueFieldName = SqlType.getUniqueFieldName(instance);
-        String parameter = request.getParameter(uniqueFieldName);
-        Assert.isTrue(Objects.nonNull(parameter) && !parameter.isEmpty(), "唯一标识不能为空!");
+    public RelaxResult info(HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
+        return performCrudOperation(baseEntityClass.newInstance(), request, response, CrudOperationType.INFO);
+    }
 
-        Field field = baseEntityClass.getDeclaredField(uniqueFieldName);
-        field.setAccessible(true);
-        if (Objects.equals(field.getType(), String.class)) {
-            field.set(instance, parameter);
-        } else if (Objects.equals(field.getType(), Long.class)) {
-            field.set(instance, Long.parseLong(parameter));
-        } else if (Objects.equals(field.getType(), Integer.class)) {
-            field.set(instance, Integer.parseInt(parameter));
-        } else if (Objects.equals(field.getType(), Short.class)) {
-            field.set(instance, Short.parseShort(parameter));
-        } else {
-            throw new IllegalArgumentException("args format error.");
-        }
-        Map<String, Object> result = SpringUtil.getBean(SqlOperationExecutor.class).submit(SqlType.SELECT_BY_ID, request, instance, baseEntityClass);
-        T finalResult = BeanUtil.mapToBean(BeanUtil.mapKVToCamelCase((Map<String, Object>) result.get("info")), baseEntityClass, true);
-        result.put("info", finalResult);
-        return RelaxResult.success(finalResult);
+    public RelaxResult performCrudOperation(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response, CrudOperationType operation) {
+        T instance = RelaxProxyUtil.getProxyBeforeExecutorBean(viewClass).run(entity, operation.getProxyMethodType(), request, response);
+        Map<String, Object> submit = SpringUtil.getBean(SqlOperationExecutor.class).submit(operation.getSqlType(), request, instance, baseEntityClass);
+        Object result = RelaxProxyUtil.getProxyAfterExecutorBean(viewClass).run(submit, operation.getProxyMethodType(), request, response);
+        return RelaxResult.success(result);
     }
 
 }

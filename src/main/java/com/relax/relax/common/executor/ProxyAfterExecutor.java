@@ -6,7 +6,7 @@ import com.relax.relax.common.proxy.RelaxViewProxy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ProxyAfterExecutor implements ProxyExecutor {
+public class ProxyAfterExecutor extends ProxyExecutor {
 
     @Override
     public Object run(Object t, ProxyMethodType type, HttpServletRequest request, HttpServletResponse response) {

@@ -1,24 +1,26 @@
-package com.relax.relax.common.proxy.node;
+package com.relax.relax.common.proxy.node.validate;
 
 import com.relax.relax.common.constants.ValidationGroup;
 import com.relax.relax.common.enums.ProxyMethodType;
+import com.relax.relax.common.proxy.RelaxViewBeforeProxy;
 import com.relax.relax.common.proxy.RelaxViewProxy;
 import com.relax.relax.common.utils.ValidationUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DefaultValidateProxyNode extends RelaxViewProxy {
+public class DefaultValidateUpdateProxyNode extends RelaxViewBeforeProxy {
 
 
     @Override
     public boolean check(Object object, ProxyMethodType type, HttpServletRequest request, HttpServletResponse response) {
-        return type == ProxyMethodType.ADD;
+        return type == ProxyMethodType.UPDATE;
     }
 
     @Override
     public <T> T proxy(T t, HttpServletRequest request, HttpServletResponse response) {
-        ValidationUtil.validate(t, ValidationGroup.Add.class);
+        ValidationUtil.validate(t);
+        ValidationUtil.validate(t, ValidationGroup.Update.class);
         return t;
     }
 }
