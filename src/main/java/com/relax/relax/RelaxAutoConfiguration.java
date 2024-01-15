@@ -3,6 +3,7 @@ package com.relax.relax;
 import com.relax.relax.common.executor.SqlOperationExecutor;
 import com.relax.relax.common.listener.BannerPrintListener;
 import com.relax.relax.common.listener.BaseMappingListener;
+import com.relax.relax.common.listener.ProxyExecutorCreateListener;
 import com.relax.relax.common.listener.RelaxEntityListener;
 import com.relax.relax.common.operation.*;
 import com.relax.relax.common.properties.RelaxConfigProperties;
@@ -23,7 +24,7 @@ import java.util.List;
 public class RelaxAutoConfiguration {
 
     @Bean
-    public BannerPrintListener bannerPrinter(){
+    public BannerPrintListener bannerPrinter() {
         return new BannerPrintListener();
     }
 
@@ -70,6 +71,11 @@ public class RelaxAutoConfiguration {
     @Bean
     public RelaxEntityListener relaxEntityListener(RelaxConfigProperties relaxConfigProperties, DataSource dataSource) {
         return new RelaxEntityListener(relaxConfigProperties, dataSource);
+    }
+
+    @Bean
+    public ProxyExecutorCreateListener proxyExecutorCreateListener(ApplicationContext context) {
+        return new ProxyExecutorCreateListener(context);
     }
 
     @Bean
