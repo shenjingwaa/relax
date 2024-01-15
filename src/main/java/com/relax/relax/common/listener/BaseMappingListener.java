@@ -96,12 +96,12 @@ public class BaseMappingListener implements ApplicationContextAware, Application
                 prefixs = classPrefix;
             }
             for (String prefix : prefixs) {
-                doRegister(method, prefix, handlerMapping, relaxClass);
+                doRegister(method, prefix, handlerMapping, relaxClass, beanClass);
             }
         }
     }
 
-    private void doRegister(Method method, String prefix, RequestMappingHandlerMapping handlerMapping, RelaxClass relaxClass) {
+    private void doRegister(Method method, String prefix, RequestMappingHandlerMapping handlerMapping, RelaxClass relaxClass, Class<?> beanClass) {
         if (prefix.startsWith("/")) {
             prefix = prefix.replaceFirst("/", "");
         }
@@ -112,7 +112,7 @@ public class BaseMappingListener implements ApplicationContextAware, Application
                 .build();
         log.debug("[relax] Do register api : {}", String.format("/%s/%s", prefix, method.getName()));
         //注册映射信息
-        handlerMapping.registerMapping(mapping, new BaseController(relaxClass.entityType()), method);
+        handlerMapping.registerMapping(mapping, new BaseController(relaxClass.entityType(), beanClass), method);
     }
 
     /**
