@@ -1,6 +1,6 @@
 <!-- _coverpage.md  封面 -->
 
-![logo](_media/logo.jpg)
+![logo](_media/logo.png)
 
 # Relax <small>0.1.0</small>
 
