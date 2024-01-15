@@ -1,12 +1,11 @@
-# Relax
-基于SpringBoot的快速通用开发包
-## 使用
+## 快速开始
+Relax对API接口中的CRUD（创建、读取、更新、删除）场景进行了丰富的封装，大幅减少了开发人员在这方面的编码工作。
 ### 引入
 ```java
 <dependency>
-<groupId>io.github.shenjingwaa</groupId>
-<artifactId>relax-spring-boot-starter</artifactId>
-<version>${latest-version}</version>
+    <groupId>io.github.shenjingwaa</groupId>
+    <artifactId>relax-spring-boot-starter</artifactId>
+    <version>${latest-version}</version>
 </dependency>
 ```
 ### 开启
@@ -20,21 +19,29 @@ public class RelaxApplication {
 }
 ```
 
-> ###### 注:
-> ###### 如果需要开启自动表创建,需在application配置文件中增加配置relax.auto-create-table: true
-> ###### 该配置默认关闭,建议在dev环境开启,prod环境关闭该功能!
+### 配置
+```yaml
+# 当前配置文件为 application.yml 文件
+relax:
+    auto-create-table: true  # 开启自动表创建
+    entity-locations: com.app.entity.**  # relax实体扫描位置(默认为springboot启动类所在文件夹及子文件夹)
+```
 
+> 注:
+> 
+> 如果需要开启自动表创建,需在application配置文件中增加配置relax.auto-create-table: true
+> 
+> 该配置默认关闭,建议在dev环境开启,prod环境关闭该功能!
 
-## 快速CRUD
-Relax对API接口中的CRUD（创建、读取、更新、删除）场景进行了丰富的封装，大幅减少了开发人员在这方面的编码工作。
-### 创建表
+### 创建表 & 参数格式 & 返回值格式
 ```java
-@Data
-@RelaxEntity(tableName = "relax_user")
+//关于@RelaxEntity,如果您的auto-create-table配置为true,那么将会自动创建表.
+//为false,则只会用于接口的生成
+@RelaxEntity(tableName = "relax_user") 
 public class RelaxUser {
 
-    // 需使用 @RelaxId 显示指定主键,
-    // 标注 @RelaxColumn 的属性会自动创建表字段,并且能够在查询中当作查询条件使用
+    // 必须有且仅有一个属性通过 @RelaxId 显示指定表的主键,
+    // 自动创建表字段会根据 @RelaxColumn 标注的属性,并且能够作为增删改查条件使用.
 
     @RelaxId
     @RelaxColumn
@@ -54,10 +61,12 @@ public class RelaxUser {
 
     @RelaxColumn
     private Integer status;
+    
+    // 此处省略get,set等方法...
 
 }
 ```
-### 创建接口
+### 创建API接口
 ```java
 @RelaxClass(entityType = RelaxUser.class)
 @RestController
@@ -65,8 +74,10 @@ public class RelaxUser {
 public class RelaxUserController {
 
 }
-
 ```
+
+> 此时您已经成功创建了接口创建,下面即可进入测试步骤
+
 
 ### 使用接口
 根据以上示例生成的接口应为:
