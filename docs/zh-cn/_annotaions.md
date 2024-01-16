@@ -111,3 +111,12 @@ public class RelaxTest {
 }
 
 ```
+## @RelaxProxy
+对自定义代理节点注册到执行器中
+```java
+@Component
+@RelaxProxy(relaxClass = RelaxUserController.class, proxyType = ProxyType.BEFORE)
+public class RelaxUserAddAfterNode extends RelaxViewBeforeProxy {
+    ...
+}
+```

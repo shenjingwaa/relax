@@ -46,7 +46,7 @@ ProxyMethodType参数如下
 ### 代理节点注册
 代理注册分为注解与代码两种方式
 #### 注解方式注册
-``` java
+```java
 @Component
 @RelaxProxy(relaxClass = RelaxUserController.class, proxyType = ProxyType.BEFORE)
 public class RelaxUserAddAfterNode extends RelaxViewBeforeProxy {
