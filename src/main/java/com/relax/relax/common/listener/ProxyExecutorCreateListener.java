@@ -16,6 +16,7 @@ import com.relax.relax.common.proxy.node.validate.*;
 import com.relax.relax.common.utils.RelaxProxyUtil;
 import com.relax.relax.common.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -74,12 +75,12 @@ public class ProxyExecutorCreateListener implements ApplicationListener<Applicat
             SpringUtil.getBean(RelaxProxyConfiguration.class).registerProxy();
         } catch (Exception ignored) {
         }
-        registerAfter();
+        register();
     }
 
-    private void registerAfter() {
+    private void register() {
         context.getBeansWithAnnotation(RelaxProxy.class).forEach((beanName, bean) -> {
-            RelaxProxy proxy = bean.getClass().getAnnotation(RelaxProxy.class);
+            RelaxProxy proxy = AopProxyUtils.ultimateTargetClass(bean).getAnnotation(RelaxProxy.class);
             if (proxy.afterClass() != RelaxViewProxy.class) {
                 RelaxProxyUtil.addProxyAfter(proxy.relaxClass(), proxy.afterClass(), (RelaxViewProxy) bean, proxy.proxyType());
             } else {
