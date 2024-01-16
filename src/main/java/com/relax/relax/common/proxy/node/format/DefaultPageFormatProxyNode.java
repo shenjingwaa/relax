@@ -1,7 +1,6 @@
 package com.relax.relax.common.proxy.node.format;
 
 import com.relax.relax.common.enums.ProxyMethodType;
-import com.relax.relax.common.proxy.RelaxViewAfterProxy;
 import com.relax.relax.common.proxy.RelaxViewBeforeProxy;
 import com.relax.relax.common.utils.BeanUtil;
 

@@ -1,16 +1,19 @@
 package com.relax.relax.common.listener;
 
 import com.relax.relax.common.annotation.RelaxClass;
+import com.relax.relax.common.annotation.RelaxProxy;
 import com.relax.relax.common.cofig.RelaxProxyConfiguration;
 import com.relax.relax.common.container.EntityHandleContainer;
 import com.relax.relax.common.executor.ProxyAfterExecutor;
 import com.relax.relax.common.executor.ProxyBeforeExecutor;
+import com.relax.relax.common.proxy.RelaxViewProxy;
 import com.relax.relax.common.proxy.node.conversion.DefaultInfoConversionProxyNode;
 import com.relax.relax.common.proxy.node.format.DefaultEntityFormatProxyNode;
 import com.relax.relax.common.proxy.node.format.DefaultInfoFormatProxyNode;
 import com.relax.relax.common.proxy.node.format.DefaultListFormatProxyNode;
 import com.relax.relax.common.proxy.node.format.DefaultPageFormatProxyNode;
 import com.relax.relax.common.proxy.node.validate.*;
+import com.relax.relax.common.utils.RelaxProxyUtil;
 import com.relax.relax.common.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -31,14 +34,9 @@ public class ProxyExecutorCreateListener implements ApplicationListener<Applicat
     public void onApplicationEvent(ApplicationReadyEvent event) {
         context.getBeansWithAnnotation(RelaxClass.class).forEach((beanName, bean) -> {
             loadingBeforeExecutor(bean);
-
             loadingAfterExecutor(bean);
-
-            try {
-                SpringUtil.getBean(RelaxProxyConfiguration.class).registerProxy();
-            } catch (Exception ignored) {
-            }
         });
+        registerProxy();
     }
 
     private static void loadingBeforeExecutor(Object bean) {
@@ -70,4 +68,24 @@ public class ProxyExecutorCreateListener implements ApplicationListener<Applicat
         afterExecutor.addProxy(new DefaultInfoFormatProxyNode());
         SpringUtil.addBean(afterExecutor, bean.getClass().getName() + "_" + ProxyAfterExecutor.class.getSimpleName());
     }
+
+    private void registerProxy() {
+        try {
+            SpringUtil.getBean(RelaxProxyConfiguration.class).registerProxy();
+        } catch (Exception ignored) {
+        }
+        registerAfter();
+    }
+
+    private void registerAfter() {
+        context.getBeansWithAnnotation(RelaxProxy.class).forEach((beanName, bean) -> {
+            RelaxProxy proxy = bean.getClass().getAnnotation(RelaxProxy.class);
+            if (proxy.afterClass() != RelaxViewProxy.class) {
+                RelaxProxyUtil.addProxyAfter(proxy.relaxClass(), proxy.afterClass(), (RelaxViewProxy) bean, proxy.proxyType());
+            } else {
+                RelaxProxyUtil.addProxy(proxy.relaxClass(), (RelaxViewProxy) bean, proxy.proxyType());
+            }
+        });
+    }
+
 }

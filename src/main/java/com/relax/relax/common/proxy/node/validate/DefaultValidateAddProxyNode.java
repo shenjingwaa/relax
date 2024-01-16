@@ -3,7 +3,6 @@ package com.relax.relax.common.proxy.node.validate;
 import com.relax.relax.common.constants.ValidationGroup;
 import com.relax.relax.common.enums.ProxyMethodType;
 import com.relax.relax.common.proxy.RelaxViewBeforeProxy;
-import com.relax.relax.common.proxy.RelaxViewProxy;
 import com.relax.relax.common.utils.ValidationUtil;
 
 import javax.servlet.http.HttpServletRequest;
