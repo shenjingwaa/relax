@@ -1,30 +1,19 @@
 package com.relax.relax.common.controller;
 
-import com.alibaba.fastjson2.JSON;
 import com.relax.relax.common.annotation.MappingType;
 import com.relax.relax.common.container.EntityHandleContainer;
 import com.relax.relax.common.domain.RelaxResult;
-import com.relax.relax.common.constants.ValidationGroup;
 import com.relax.relax.common.enums.CrudOperationType;
-import com.relax.relax.common.enums.ProxyMethodType;
-import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.executor.SqlOperationExecutor;
-import com.relax.relax.common.utils.BeanUtil;
 import com.relax.relax.common.utils.RelaxProxyUtil;
 import com.relax.relax.common.utils.SpringUtil;
-import com.relax.relax.common.utils.ValidationUtil;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class BaseController<T> {

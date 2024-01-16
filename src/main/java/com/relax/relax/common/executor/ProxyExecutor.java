@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class ProxyExecutor {
     List<RelaxViewProxy> proxyContainer = new ArrayList<>();
@@ -24,7 +23,7 @@ public abstract class ProxyExecutor {
 
     public void addProxyBefore(Class<? extends RelaxViewProxy> clazz, RelaxViewProxy proxy) {
         proxy.setExecutor(this);
-
+        if (proxyContainer.contains(proxy)) return;
         int index = getProxyIndex(clazz);
         if (index >= 0) {
             proxyContainer.add(index, proxy);
@@ -35,7 +34,7 @@ public abstract class ProxyExecutor {
 
     public void addProxyAfter(Class<? extends RelaxViewProxy> clazz, RelaxViewProxy proxy) {
         proxy.setExecutor(this);
-
+        if (proxyContainer.contains(proxy)) return;
         int index = getProxyIndex(clazz);
         if (index >= 0) {
             proxyContainer.add(index + 1, proxy);
@@ -46,7 +45,7 @@ public abstract class ProxyExecutor {
 
     public void addProxy(RelaxViewProxy proxy) {
         proxy.setExecutor(this);
-
+        if (proxyContainer.contains(proxy)) return;
         proxyContainer.add(proxy);
     }
 

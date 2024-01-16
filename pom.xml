@@ -10,24 +10,25 @@
     <name>relax-spring-boot-starter</name>
     <description>
         A Rapid Development Tool Based on Springboot.
-        Single table addition, deletion, modification, and querying can be quickly achieved through annotations, as well as entity reverse parsing into tables.
+        Single table addition, deletion, modification, and querying can be quickly achieved through annotations, as well
+        as entity reverse parsing into tables.
     </description>
     <url>https://github.com/shenjingwaa/relax</url>
 
-<!--    <developers>-->
-<!--        <developer>-->
-<!--            <name>haifeng-yan</name>-->
-<!--            <email>1131368173@qq.com</email>-->
-<!--            <timezone>+8</timezone>-->
-<!--        </developer>-->
+    <developers>
+        <developer>
+            <name>haifeng-yan</name>
+            <email>1131368173@qq.com</email>
+            <timezone>+8</timezone>
+        </developer>
 
-<!--        <developer>-->
-<!--            <name>shenjingwa</name>-->
-<!--            <email>huao0329@gmail.com</email>-->
-<!--            <organization>https://github.com/shenjingwaa/</organization>-->
-<!--            <timezone>+8</timezone>-->
-<!--        </developer>-->
-<!--    </developers>-->
+        <developer>
+            <name>shenjingwa</name>
+            <email>huao0329@gmail.com</email>
+            <organization>https://github.com/shenjingwaa/</organization>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
 
 
     <properties>
@@ -104,135 +105,134 @@
 
     </dependencies>
 
-<!--    <build>-->
-<!--&lt;!&ndash;        <pluginManagement>&ndash;&gt;-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <excludes>-->
-<!--                        <exclude>-->
-<!--                            <groupId>org.projectlombok</groupId>-->
-<!--                            <artifactId>lombok</artifactId>-->
-<!--                        </exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
 
 
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.8.1</version>-->
-<!--                <configuration>-->
-<!--                    <source>${java.version}</source>-->
-<!--                    <target>${java.version}</target>-->
-<!--                    <encoding>UTF-8</encoding>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            &lt;!&ndash; sonatype插件，发布使用&ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.sonatype.plugins</groupId>-->
-<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                <version>1.6.7</version>-->
-<!--                <extensions>true</extensions>-->
-<!--                <configuration>-->
-<!--                    <serverId>ossrh</serverId>-->
-<!--                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
-<!--                    <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <!-- sonatype插件，发布使用-->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
 
-<!--            &lt;!&ndash; 生成java source.jar &ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-source-plugin</artifactId>-->
-<!--                <version>2.2.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>attach-sources</id>-->
-<!--                        <goals>-->
-<!--                            <goal>jar-no-fork</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+                <!-- 生成java source.jar -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
-<!--            &lt;!&ndash; 生成java doc文档 &ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--                <version>2.9.1</version>-->
-<!--                <configuration>-->
-<!--                    <show>private</show>-->
-<!--                    <nohelp>true</nohelp>-->
-<!--                    <charset>UTF-8</charset>-->
-<!--                    <encoding>UTF-8</encoding>-->
-<!--                    <docencoding>UTF-8</docencoding>-->
-<!--                    <additionalparam>-Xdoclint:none</additionalparam>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>jar</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+                <!-- 生成java doc文档 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <configuration>
+                        <show>private</show>
+                        <nohelp>true</nohelp>
+                        <charset>UTF-8</charset>
+                        <encoding>UTF-8</encoding>
+                        <docencoding>UTF-8</docencoding>
+                        <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
-<!--            &lt;!&ndash; 工程文件自动签名&ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-gpg-plugin</artifactId>-->
-<!--                <version>1.5</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>sign-artifacts</id>-->
-<!--                        <phase>verify</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>sign</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+                <!-- 工程文件自动签名-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.5</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-deploy-plugin</artifactId>-->
-<!--                <version>2.8.2</version>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-<!--&lt;!&ndash;        </pluginManagement>&ndash;&gt;-->
-<!--    </build>-->
-
-<!--    <distributionManagement>-->
-<!--        <snapshotRepository>-->
-<!--            <id>ossrh</id>-->
-<!--            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
-<!--        </snapshotRepository>-->
-<!--        <repository>-->
-<!--            <id>ossrh</id>-->
-<!--            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
-<!--    </distributionManagement>-->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 
-<!--    <licenses>-->
-<!--        <license>-->
-<!--            <name>The Apache Software License, Version 2.0</name>-->
-<!--            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>-->
-<!--            <distribution>repo</distribution>-->
-<!--        </license>-->
-<!--    </licenses>-->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-<!--    <scm>-->
-<!--        <url>https://github.com/shenjingwaa/relax</url>-->
-<!--        <connection>scm:git@github.com/shenjingwaa/relax.git</connection>-->
-<!--        <developerConnection>scm:git@github.com/shenjingwaa/relax.git</developerConnection>-->
-<!--    </scm>-->
+    <scm>
+        <url>https://github.com/shenjingwaa/relax</url>
+        <connection>scm:git@github.com/shenjingwaa/relax.git</connection>
+        <developerConnection>scm:git@github.com/shenjingwaa/relax.git</developerConnection>
+    </scm>
 
 
 </project>
