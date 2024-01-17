@@ -1,7 +1,7 @@
 # Relax
 基于SpringBoot的快速CRUD工具。
 
-官方手册:
+使用文档: https://shenjingwaa.github.io/relax/#/
 ## 使用
 ### 引入
 ```java
