@@ -1,5 +1,7 @@
 # Relax
-基于SpringBoot的快速通用开发包
+基于SpringBoot的快速CRUD工具。
+
+官方手册:
 ## 使用
 ### 引入
 ```java
