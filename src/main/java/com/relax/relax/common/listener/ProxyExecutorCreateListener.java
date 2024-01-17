@@ -8,10 +8,7 @@ import com.relax.relax.common.executor.ProxyAfterExecutor;
 import com.relax.relax.common.executor.ProxyBeforeExecutor;
 import com.relax.relax.common.proxy.RelaxViewProxy;
 import com.relax.relax.common.proxy.node.conversion.DefaultInfoConversionProxyNode;
-import com.relax.relax.common.proxy.node.format.DefaultEntityFormatProxyNode;
-import com.relax.relax.common.proxy.node.format.DefaultInfoFormatProxyNode;
-import com.relax.relax.common.proxy.node.format.DefaultListFormatProxyNode;
-import com.relax.relax.common.proxy.node.format.DefaultPageFormatProxyNode;
+import com.relax.relax.common.proxy.node.format.*;
 import com.relax.relax.common.proxy.node.validate.*;
 import com.relax.relax.common.utils.RelaxProxyUtil;
 import com.relax.relax.common.utils.SpringUtil;
@@ -67,6 +64,7 @@ public class ProxyExecutorCreateListener implements ApplicationListener<Applicat
         afterExecutor.addProxy(new DefaultPageFormatProxyNode());
         afterExecutor.addProxy(new DefaultListFormatProxyNode());
         afterExecutor.addProxy(new DefaultInfoFormatProxyNode());
+        afterExecutor.addProxy(new DefaultResultFormatProxyNode());
         SpringUtil.addBean(afterExecutor, bean.getClass().getName() + "_" + ProxyAfterExecutor.class.getSimpleName());
     }
 

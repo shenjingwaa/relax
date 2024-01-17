@@ -73,7 +73,7 @@ public class RelaxProxyRegisterConfig implements RelaxProxyConfiguration {
 ```
 代码方式注册需要实现 **RelaxProxyConfiguration**的**registerProxy**方法
 使用 **RelaxProxyUtil**的**addProxy**方法，将自定义的代理节点添加到执行器
-> 上面的类都要使用 **@Component** 注入到spring容器中  
+> 上面的类都要使用 **@Component** 注入到spring容器中,一般后置方法须在 **DefaultResultFormatProxyNode** 节点前
 
 **RelaxProxyUtil** 中有三个注册方法
 - **addProxyBefore(relaxClass, beaforeClass, relaxProxy, proxyType)** 注册代理节点到某代理节点之前,参数依次为业务类、需到那个代理节点之前、需添加的代理节点、代理节点是前置或后置
@@ -93,3 +93,4 @@ public class RelaxProxyRegisterConfig implements RelaxProxyConfiguration {
 > DefaultPageFormatProxyNode page返回对象构造类  
 > DefaultListFormatProxyNode list返回对象构造类  
 > DefaultInfoFormatProxyNode info返回对象构造类  
+> DefaultResultFormatProxyNode 返回数据包装为AjaxResult类  
