@@ -63,7 +63,7 @@ public class BaseController<T> {
         return performCrudOperation(baseEntityClass.newInstance(), request, response, CrudOperationType.INFO);
     }
 
-    public Object performCrudOperation(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response, CrudOperationType operation) {
+    private Object performCrudOperation(T entity, HttpServletRequest request, HttpServletResponse response, CrudOperationType operation) {
         T instance = RelaxProxyUtil.getProxyBeforeExecutorBean(viewClass).run(entity, operation.getProxyMethodType(), request, response);
         Map<String, Object> submit = SpringUtil.getBean(SqlOperationExecutor.class).submit(operation.getSqlType(), request, instance, baseEntityClass);
         return RelaxProxyUtil.getProxyAfterExecutorBean(viewClass).run(submit, operation.getProxyMethodType(), request, response);
