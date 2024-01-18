@@ -35,7 +35,7 @@ public class ColumnSqlBuilder {
             createTableSql.append(splicingPrimary(field));
             // todo add comment
             if (!relaxColumn.comment().isEmpty())
-                createTableSql.append(" COMMENT '" + relaxColumn.comment() + "' ");
+                createTableSql.append(" COMMENT '").append(relaxColumn.comment()).append("' ");
             createTableSql.append(", ");
             return createTableSql.toString();
         }
