@@ -15,6 +15,11 @@ public @interface RelaxEntity {
     String tableName();
 
     /**
+     * 表注释
+     */
+    String comment() default "";
+
+    /**
      * 开关
      */
     boolean enable() default true;
