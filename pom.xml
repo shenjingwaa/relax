@@ -5,7 +5,7 @@
 
     <groupId>io.github.shenjingwaa</groupId>
     <artifactId>relax-spring-boot-starter</artifactId>
-    <version>0.0.8.RELEASE</version>
+    <version>0.1.0.RELEASE</version>
 
     <name>relax-spring-boot-starter</name>
     <description>
