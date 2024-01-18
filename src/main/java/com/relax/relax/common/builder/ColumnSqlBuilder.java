@@ -15,24 +15,31 @@ public class ColumnSqlBuilder {
         String columnName = getColumnName(field);
         createTableSql.append(columnName);
 
-        if (field.isAnnotationPresent(RelaxColumn.class) && field.getAnnotation(RelaxColumn.class).generate() && !field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
+
+        if (field.isAnnotationPresent(RelaxColumn.class)) {
             RelaxColumn relaxColumn = field.getAnnotation(RelaxColumn.class);
-            processColumnAnnotation(relaxColumn, createTableSql);
-        } else if (field.isAnnotationPresent(RelaxColumn.class) && field.getAnnotation(RelaxColumn.class).generate() && field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
-            Class<?> type = field.getType();
-            ColumnType columnType = getTypeStrategy(type);
-            if (columnType != null) {
-                createTableSql.append(columnType.getSqlType());
+            if (relaxColumn.generate() && !relaxColumn.type().isEmpty()) {
+                processColumnAnnotation(relaxColumn, createTableSql);
+            } else if (relaxColumn.generate() && relaxColumn.type().isEmpty()) {
+                Class<?> type = field.getType();
+                ColumnType columnType = getTypeStrategy(type);
+                if (columnType != null) {
+                    createTableSql.append(columnType.getSqlType());
+                } else {
+                    log.warn("[relax] " + type + "not default column type, please specify column type in @RelaxColumn");
+                    return "";
+                }
             } else {
-                log.warn("[relax] "+type + "not default column type, please specify column type in @RelaxColumn");
                 return "";
             }
-        }else {
-            return "";
+            createTableSql.append(splicingPrimary(field));
+            // todo add comment
+            if (!relaxColumn.comment().isEmpty())
+                createTableSql.append(" COMMENT '" + relaxColumn.comment() + "' ");
+            createTableSql.append(", ");
+            return createTableSql.toString();
         }
-        createTableSql.append(splicingPrimary(field));
-        createTableSql.append(", ");
-        return createTableSql.toString();
+        return "";
     }
 
     private static String splicingPrimary(Field field) {

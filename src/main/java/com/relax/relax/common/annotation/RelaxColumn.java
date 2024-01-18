@@ -30,6 +30,11 @@ public @interface RelaxColumn {
     String length() default "";
 
     /**
+     * 字段注释
+     */
+    String comment() default "";
+
+    /**
      * page list 查询时的查询模式,填入的值参考以下
      * @see com.relax.relax.common.enums.QueryType
      */
