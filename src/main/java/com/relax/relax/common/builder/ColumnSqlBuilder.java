@@ -33,7 +33,6 @@ public class ColumnSqlBuilder {
                 return "";
             }
             createTableSql.append(splicingPrimary(field));
-            // todo add comment
             if (!relaxColumn.comment().isEmpty())
                 createTableSql.append(" COMMENT '").append(relaxColumn.comment()).append("' ");
             createTableSql.append(", ");
