@@ -1,5 +1,5 @@
 <p align="center">
-	<img alt="logo" src="http://yun.taoke.img.motuixiu.com/170556257818736728357.png">
+	<img alt="logo" src="https://i.ibb.co/tmLJqdD/logo.png">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Relax</h1>
 <h4 align="center">基于SpringBoot的快速CRUD工具。</h4>
