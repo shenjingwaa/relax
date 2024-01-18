@@ -2,6 +2,7 @@ package com.relax.relax.common.operation;
 
 import com.relax.relax.common.annotation.RelaxColumn;
 import com.relax.relax.common.enums.QueryType;
+import com.relax.relax.common.enums.RangeType;
 import com.relax.relax.common.enums.SqlType;
 import com.relax.relax.common.utils.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ public class SelectListOperation extends SqlOperation{
         String relaxSelectItemForRightLike = "and relaxFieldName like CONCAT('',?,'%') ";
         String relaxSelectItemForAllLike = "and relaxFieldName like CONCAT('%',?,'%') ";
 
+        String relaxSelectRangeTemplate = "and relaxFieldName @symbol@ ? ";
+
         StringBuilder relaxSelectSql = new StringBuilder();
         List<String> args = new ArrayList<>();
         for (Field field : getRelaxField(targetClass)) {
@@ -58,12 +61,24 @@ public class SelectListOperation extends SqlOperation{
                 continue;
             }
             RelaxColumn relaxColumn = field.getAnnotation(RelaxColumn.class);
-            QueryType queryType = relaxColumn.queryType();
-            if (Objects.equals(QueryType.ALL_MATCH, queryType)) relaxSelectSql.append(relaxSelectItemForAllMatch.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
-            if (Objects.equals(QueryType.LEFT_LIKE, queryType)) relaxSelectSql.append(relaxSelectItemForLeftLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
-            if (Objects.equals(QueryType.RIGHT_LIKE, queryType)) relaxSelectSql.append(relaxSelectItemForRightLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
-            if (Objects.equals(QueryType.ALL_LIKE, queryType)) relaxSelectSql.append(relaxSelectItemForAllLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
-
+            if (Objects.equals(relaxColumn.rangeType(), RangeType.NONE)) {
+                QueryType queryType = relaxColumn.queryType();
+                if (Objects.equals(QueryType.ALL_MATCH, queryType))
+                    relaxSelectSql.append(relaxSelectItemForAllMatch.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+                if (Objects.equals(QueryType.LEFT_LIKE, queryType))
+                    relaxSelectSql.append(relaxSelectItemForLeftLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+                if (Objects.equals(QueryType.RIGHT_LIKE, queryType))
+                    relaxSelectSql.append(relaxSelectItemForRightLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+                if (Objects.equals(QueryType.ALL_LIKE, queryType))
+                    relaxSelectSql.append(relaxSelectItemForAllLike.replace("relaxFieldName", RegexUtil.camelCaseToUnderscore(field.getName())));
+            } else {
+                RangeType rangeType = relaxColumn.rangeType();
+                String rangeField = relaxColumn.rangeField();
+                if (rangeField.isEmpty()) {
+                    throw new IllegalArgumentException("rangeField in @RelaxColumn at " + targetClass.getName() + "." + field.getName() + " should not is empty");
+                }
+                relaxSelectSql.append(relaxSelectRangeTemplate.replace("relaxFieldName", rangeField).replace("@symbol@",rangeType.symbol));
+            }
             args.add(fieldValue.toString());
         }
         if (args.isEmpty()) {

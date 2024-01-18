@@ -15,10 +15,10 @@ public class ColumnSqlBuilder {
         String columnName = getColumnName(field);
         createTableSql.append(columnName);
 
-        if (field.isAnnotationPresent(RelaxColumn.class) && !field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
+        if (field.isAnnotationPresent(RelaxColumn.class) && field.getAnnotation(RelaxColumn.class).generate() && !field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
             RelaxColumn relaxColumn = field.getAnnotation(RelaxColumn.class);
             processColumnAnnotation(relaxColumn, createTableSql);
-        } else if (field.isAnnotationPresent(RelaxColumn.class) && field.getAnnotation(RelaxColumn.class).type().isEmpty()){
+        } else if (field.isAnnotationPresent(RelaxColumn.class) && field.getAnnotation(RelaxColumn.class).generate() && field.getAnnotation(RelaxColumn.class).type().isEmpty()) {
             Class<?> type = field.getType();
             ColumnType columnType = getTypeStrategy(type);
             if (columnType != null) {

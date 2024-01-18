@@ -41,7 +41,7 @@ public class RelaxEntityListener implements ApplicationListener<ApplicationReady
         if (Objects.isNull(configProperties.getEntityLocations()))
             configProperties.setEntityLocations(mainClass.getPackage().getName());
         log.info("[relax] entity locations is {}", configProperties.getEntityLocations());
-        if (mainClass.isAnnotationPresent(EnableRelax.class) && mainClass.getAnnotation(EnableRelax.class).isEnable()) {
+        if (mainClass.isAnnotationPresent(EnableRelax.class)) {
             createTables();
         }
     }

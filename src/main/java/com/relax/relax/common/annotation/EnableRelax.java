@@ -15,6 +15,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Import(RelaxAutoConfiguration.class)
 public @interface EnableRelax {
-    boolean isEnable() default true;
-
 }

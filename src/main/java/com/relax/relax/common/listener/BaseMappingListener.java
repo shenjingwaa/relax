@@ -47,7 +47,7 @@ public class BaseMappingListener implements ApplicationContextAware, Application
         RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
         Class<?> mainApplicationClass = event.getSpringApplication().getMainApplicationClass();
         EnableRelax enableRelax = mainApplicationClass.getAnnotation(EnableRelax.class);
-        if (Objects.nonNull(enableRelax) && enableRelax.isEnable()) {
+        if (Objects.nonNull(enableRelax)) {
             log.info("[relax] start to scan crud annotation.");
             startToRegisterApi(handlerMapping);
             log.info("[relax] Base api init success.");
