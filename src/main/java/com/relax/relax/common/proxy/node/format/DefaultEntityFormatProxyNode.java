@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DefaultEntityFormatProxyNode extends RelaxViewBeforeProxy {
     @Override
     public <T> T proxy(T t, HttpServletRequest request, HttpServletResponse response) {
-        return JSON.to((Class<T>) getExecutor().getBaseEntityClass(), t);
+        return JSON.to((Class<T>) getExecutor().getBaseEntityClass(), JSON.toJSONString(t));
     }
 
     @Override
