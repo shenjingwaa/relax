@@ -51,9 +51,9 @@ public class BaseController<T> {
         return performCrudOperation(entity, request, response, CrudOperationType.PAGE);
     }
 
-    @MappingType(RequestMethod.POST)
+    @MappingType(RequestMethod.GET)
     @ResponseBody
-    public Object list(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
+    public Object list(T entity, HttpServletRequest request, HttpServletResponse response) {
         return performCrudOperation(entity, request, response, CrudOperationType.LIST);
     }
 
