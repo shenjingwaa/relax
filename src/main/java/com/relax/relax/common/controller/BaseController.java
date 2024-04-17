@@ -45,9 +45,9 @@ public class BaseController<T> {
         return performCrudOperation(entity, request, response, CrudOperationType.DELETE);
     }
 
-    @MappingType(RequestMethod.POST)
+    @MappingType(RequestMethod.GET)
     @ResponseBody
-    public Object page(@RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
+    public Object page(T entity, HttpServletRequest request, HttpServletResponse response) {
         return performCrudOperation(entity, request, response, CrudOperationType.PAGE);
     }
 
